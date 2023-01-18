@@ -10,7 +10,7 @@
 
   let view: null | EditorView = null;
 
-  let wasm: null | Uint8Array = null;
+  let wat: null | string = null;
   let error: null | string = null;
 
   const ro = new ResizeObserver((entries) => {
@@ -37,6 +37,8 @@
   });
 
   async function compile() {
+    wat = null;
+  
     asc
       .compileString(
         {
@@ -62,7 +64,7 @@
           error = err;
         }
 
-        console.log(result);
+        wat = result.text;
       });
   }
 </script>
@@ -93,6 +95,9 @@
               X
             </button>
           </div>
+        {/if}
+        {#if !wat}
+          <p class="text-sm">loading...</p>
         {/if}
         <div id="gameShell" class="rounded-md border-2 border-gray-400">
           <canvas id="gameCanvas" class="rounded-md" />
