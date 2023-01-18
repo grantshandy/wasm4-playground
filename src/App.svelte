@@ -1,16 +1,112 @@
 <script lang="ts">
+  import { onMount } from "svelte";
+
+  import mainFileTemplate from "./templates/main?raw";
+  import wasm4FileTemplate from "./templates/wasm4?raw";
+
+  import { EditorView, basicSetup } from "codemirror";
+  import { javascript } from "@codemirror/lang-javascript";
+  import asc from "assemblyscript/dist/asc.js";
+
+  let view: null | EditorView = null;
+
+  let wasm: null | Uint8Array = null;
+  let error: null | string = null;
+
+  const ro = new ResizeObserver((entries) => {
+    const size = entries[0].contentRect;
+    const elem = document.getElementById("gameCanvas");
+
+    elem.width = size.width;
+    elem.height = size.width;
+  });
+
+  onMount(() => {
+    // init text editor.
+    view = new EditorView({
+      extensions: [basicSetup, javascript()],
+      parent: document.getElementById("textEdit"),
+      doc: mainFileTemplate,
+    });
+    view.focus(); // bring in cursor focus on pageload
+    view.contentDOM.setAttribute("data-enable-grammarly", "false"); // disable grammarly
+
+    ro.observe(document.getElementById("gameShell")); // resize game canvas
+
+    compile();
+  });
+
+  async function compile() {
+    asc
+      .compileString(
+        {
+          "main.ts": view.state.doc.toString(),
+          "wasm4.ts": wasm4FileTemplate,
+        },
+        {
+          optimize: true,
+          optimizeLevel: 3,
+          shrinkLevel: 2,
+          converge: true,
+          noAssert: true,
+        }
+      )
+      .then((result) => {
+        if (result.error) {
+          let err = `${result.error.message}`;
+
+          if (result.stderr) {
+            err += ` - ${result.stderr.toString()}`;
+          }
+
+          error = err;
+        }
+
+        console.log(result);
+      });
+  }
 </script>
 
-<main class="min-h-screen bg-stone-600 text-stone-100 flex">
-  <div class="grow grid grid-cols-1 md:grid-cols-2 gap-3 p-3">
-    <div class="h-full rounded-md shadow-md p-2 bg-stone-700 flex flex-col space-y-2">
-      <textarea class="grow rounded-md bg-stone-500 w-full p-1 font-mono text-sm"/>
-      <div class="flow-root">
-        <button class="float-right rounded-md shadow-sm px-2 py-1 bg-stone-500 font-bold">Run</button>
+<main class="min-h-screen p-2 text-gray-700 bg-gray-50">
+  <div class="h-full w-full md:w-2/3 lg:w-1/2 mx-auto space-y-2 flex flex-col">
+    <div>
+      <h1 class="font-bold text-2xl">WASM-4 Playground</h1>
+      <p class="text-sm">
+        Create and share <a href="https://wasm4.org" class="underline">wasm-4</a
+        > retro games in your web browser.
+      </p>
+    </div>
+    <div class="h-full grow space-y-3 flex flex-col">
+      <div class="py-2 px-3 space-y-2 rounded-md border-2 border-gray-400">
+        <div class="w-full flow-root space-x-2">
+          <h2 class="float-left text-lg font-semibold">Game Preview</h2>
+          <button class="float-right btn-primary">Download</button>
+          <button class="float-right btn-primary">Share</button>
+        </div>
+        {#if error}
+          <div class="rounded-md p-2 bg-red-700 text-gray-100 flow-root">
+            <p class="float-left font-bold align-middle">Error: {error}</p>
+            <button
+              class="float-right select-none rounded-full w-7 h-7 hover:bg-red-800 hover:font-bold"
+              on:click={() => (error = null)}
+            >
+              X
+            </button>
+          </div>
+        {/if}
+        <div id="gameShell" class="rounded-md border-2 border-gray-400">
+          <canvas id="gameCanvas" class="rounded-md" />
+        </div>
+      </div>
+      <div class="p-2 space-y-2 rounded-md border-2 border-gray-400">
+        <h2 class="text-lg font-semibold">Text Editor</h2>
+        <div id="textEdit" spellcheck="false" />
+        <div class="w-full flow-root">
+          <button class="float-right btn-primary" on:click={compile}
+            >Apply Changes</button
+          >
+        </div>
       </div>
     </div>
-    <div class="h-full rounded-md shadow-md p-2 bg-stone-700">
-      <p>Game Preview</p>
-    <div>
   </div>
 </main>
