@@ -1,0 +1,3 @@
+[submodule "wasm4"]
+	path = wasm4
+	url = https://github.com/aduros/wasm4
