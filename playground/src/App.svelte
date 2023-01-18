@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import Wasm4Game from "./Wasm4Game.svelte";
 
   import mainFileTemplate from "./templates/main?raw";
   import wasm4FileTemplate from "./templates/wasm4?raw";
@@ -10,16 +11,8 @@
 
   let view: null | EditorView = null;
 
-  let wat: null | string = null;
+  let wasmBinary = null;
   let error: null | string = null;
-
-  const ro = new ResizeObserver((entries) => {
-    const size = entries[0].contentRect;
-    const elem = document.getElementById("gameCanvas");
-
-    elem.width = size.width;
-    elem.height = size.width;
-  });
 
   onMount(() => {
     // init text editor.
@@ -31,13 +24,11 @@
     view.focus(); // bring in cursor focus on pageload
     view.contentDOM.setAttribute("data-enable-grammarly", "false"); // disable grammarly
 
-    ro.observe(document.getElementById("gameShell")); // resize game canvas
-
     compile();
   });
 
   async function compile() {
-    wat = null;
+    wasmBinary = null;
   
     asc
       .compileString(
@@ -49,8 +40,15 @@
           optimize: true,
           optimizeLevel: 3,
           shrinkLevel: 2,
+          runtime: "incremental",
+          memoryBase: 6560,
           converge: true,
           noAssert: true,
+          importMemory: true,
+          initialMemory: 1,
+          maximumMemory: 1,
+          noExportMemory: true,
+          zeroFilledMemory: true,
         }
       )
       .then((result) => {
@@ -62,9 +60,10 @@
           }
 
           error = err;
+          return;
         }
 
-        wat = result.text;
+        wasmBinary = result.binary;
       });
   }
 </script>
@@ -96,11 +95,12 @@
             </button>
           </div>
         {/if}
-        {#if !wat}
-          <p class="text-sm">loading...</p>
-        {/if}
-        <div id="gameShell" class="rounded-md border-2 border-gray-400">
-          <canvas id="gameCanvas" class="rounded-md" />
+        <div class="rounded-md border-2 border-gray-400">
+          {#if !wasmBinary}
+            <p class="text-sm">loading...</p>
+          {:else}
+            <Wasm4Game { wasmBinary } />
+          {/if}
         </div>
       </div>
       <div class="p-2 space-y-2 rounded-md border-2 border-gray-400">
