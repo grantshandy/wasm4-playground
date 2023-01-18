@@ -1,5 +1,6 @@
 <script lang="ts">
   import { onMount } from "svelte";
+  import { encode } from "./runtime/z85";
   import Wasm4Game from "./Wasm4Game.svelte";
 
   import mainFileTemplate from "./templates/main?raw";
@@ -11,7 +12,7 @@
 
   let view: null | EditorView = null;
 
-  let wasmBinary = null;
+  let game = false;
   let error: null | string = null;
 
   onMount(() => {
@@ -28,7 +29,7 @@
   });
 
   async function compile() {
-    wasmBinary = null;
+    game = false;
   
     asc
       .compileString(
@@ -37,18 +38,22 @@
           "wasm4.ts": wasm4FileTemplate,
         },
         {
-          optimize: true,
-          optimizeLevel: 3,
-          shrinkLevel: 2,
           runtime: "incremental",
-          memoryBase: 6560,
-          converge: true,
-          noAssert: true,
           importMemory: true,
           initialMemory: 1,
           maximumMemory: 1,
           noExportMemory: true,
           zeroFilledMemory: true,
+          memoryBase: 6560,
+          use: [
+            "seed=wasm4/seedHandler",
+            "trace=",
+            "abort="
+          ],
+          optimizeLevel: 3,
+          shrinkLevel: 2,
+          converge: true,
+          noAssert: true,
         }
       )
       .then((result) => {
@@ -63,12 +68,23 @@
           return;
         }
 
-        wasmBinary = result.binary;
+        console.log(result);
+
+        document.getElementById("wasm4-cart-json").innerHTML = JSON.stringify({
+    			WASM4_CART: encode(result.binary),
+    			WASM4_CART_LENGTH: result.binary.length,
+    		}).replace(/<\//g, '<\\u002F').replace(/<!/g, '<\\u0021');
+
+        // document.getElementById("wasm4-cart-json").innerHTML = JSON.stringify({WASM4_CART:"0ax}=0rr910u88G1B>]JE/J<UE$8}Fu<qagE$8@$0ak^b0XjuPwO#U$By/YsrDI?chuiZVwO#U]vR/+200imlzGVk3wO(vaC(!0E0rSA90rSGa00SYfE/R<FV&HKt3ipuNAaAy0wDh/v0r&*.0rJ(laoiI:k)g%K0STtzaoA8O3Vk}?06{:6bMG4?la/3B1v8}{blg1fhuA>A6Hq^Z0rstAlbkom0SUK4gEhvl3j)n87a/H^k(>%dkTu8I1uMR:3QHBwlcGr{+M6{mk)P:R5cj0Ql69]Y0SUJFg^IWs*5IV=blg1jy9S=!3Yt2?070nl3KBU3bQrvnNzP1<Ttpj+oAmw*gyDnB0000Q0000&0a=dD0bITN03znN0ce6T0bRYy06{Qa0cncK0bRZB0bITX08&(c0ce6N0b}{W03Itd@4!YYjodW6gZ+Vi0000w0000}0ce6J0cncY03znz03zn-0b?&W0aC}A0bhBJ0bzMm",WASM4_CART_SIZE:390});
+
+        game = true;
       });
   }
 </script>
 
 <main class="min-h-screen p-2 text-gray-700 bg-gray-50">
+  <script id="wasm4-cart-json" type="application/json"></script>
+	<script id="wasm4-disk-prefix" type="text/plain">Wasm4 Demo Game</script>
   <div class="h-full w-full md:w-2/3 lg:w-1/2 mx-auto space-y-2 flex flex-col">
     <div>
       <h1 class="font-bold text-2xl">WASM-4 Playground</h1>
@@ -96,10 +112,10 @@
           </div>
         {/if}
         <div class="rounded-md border-2 border-gray-400">
-          {#if !wasmBinary}
+          {#if !game}
             <p class="text-sm">loading...</p>
           {:else}
-            <Wasm4Game { wasmBinary } />
+            <Wasm4Game />
           {/if}
         </div>
       </div>
