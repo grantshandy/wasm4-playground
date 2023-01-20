@@ -37,7 +37,7 @@
   <div class="md:w-2/3 lg:w-1/2 mx-auto space-y-2">
     <h1 class="font-bold text-2xl">WASM-4 Playground</h1>
     <p class="text-sm">
-      Create and share <a href="https://wasm4.org" class="underline">wasm-4</a> retro
+      Create and share <a href="https://wasm4.org" class="underline">WASM-4</a> retro
       games in your web browser.
     </p>
   </div>
@@ -57,13 +57,11 @@
         <button class="float-right btn-primary">Download</button>
         <button class="float-right btn-primary">Share</button>
       </div>
-      <div class="grow rounded-md border-2 border-gray-400">
-        {#if viewGame}
-          <Wasm4Game { wasm } />
-        {:else}
-          <p class="text-sm m-3">loading...</p>
-        {/if}
-      </div>
+      {#if viewGame}
+        <Wasm4Game {wasm} />
+      {:else}
+        <p class="text-sm">loading...</p>
+      {/if}
     </div>
   </div>
   <div class="md:w-2/3 lg:w-1/2 mx-auto space-y-2">

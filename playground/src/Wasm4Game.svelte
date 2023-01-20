@@ -4,9 +4,6 @@
   export let wasm: Uint8Array;
 
   import * as constants from "../../wasm4/runtimes/web/src/constants";
-  import * as utils from "../../wasm4/runtimes/web/src/ui/utils";
-  import * as z85 from "../../wasm4/runtimes/web/src/z85";
-
   import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
 
   let runtime: Runtime = new Runtime("wasm4-demo");
@@ -41,13 +38,6 @@
   const onKeyboardEvent = (event: KeyboardEvent) => {
     if (event.ctrlKey || event.altKey) {
       return; // Ignore ctrl/alt modified key presses because they may be the user trying to navigate
-    }
-
-    if (
-      event.srcElement instanceof HTMLElement &&
-      event.srcElement.tagName == "INPUT"
-    ) {
-      return; // Ignore if we have an input element focused
     }
 
     const down = event.type == "keydown";
@@ -186,26 +176,16 @@
       runtime.composite();
     }
   };
-  requestAnimationFrame(onFrame);
 
   onMount(async () => {
-    // init runtime
     await runtime.init();
+    runtime.canvas.classList.add("gamecanvas");
     document.getElementById("gameroot").appendChild(runtime.canvas);
 
     await runtime.load(wasm);
-
     runtime.start();
+    requestAnimationFrame(onFrame);
   });
 </script>
 
 <div class="w-full h-full" id="gameroot" />
-
-<style>
-  canvas {
-    width: 100%;
-    height: 100%;
-    image-rendering: pixelated;
-    image-rendering: crisp-edges;
-  }
-</style>

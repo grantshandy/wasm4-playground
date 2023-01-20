@@ -3,8 +3,6 @@ import asc from "assemblyscript/dist/asc.js";
 export async function compileAsm(
   sources: { [key: string]: string },
 ): Promise<Uint8Array> {
-  console.log(sources);
-
   return asc
     .compileString(
       sources,
