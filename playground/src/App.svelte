@@ -1,29 +1,19 @@
 <script lang="ts">
   import { onMount } from "svelte";
-  import Wasm4Game from "./Wasm4Game.svelte";
-
   import mainFileTemplate from "./templates/main?raw";
   import wasm4FileTemplate from "./templates/wasm4?raw";
 
-  import { compileAsm } from "./asm";
+  import Wasm4Game from "./Wasm4Game.svelte";
   import CodeMirror from "svelte-codemirror-editor";
+
+  import { compileAsm } from "./asm";
   import { javascript } from "@codemirror/lang-javascript";
 
   let viewGame: boolean = false;
-
   let sourceCode: string = mainFileTemplate;
   let wasm: Uint8Array = new Uint8Array();
 
   let error: { title: string; msg: string } | null = null;
-
-  let sources: { [key: string]: string } = {
-    "main.ts": sourceCode,
-    "wasm4.ts": wasm4FileTemplate,
-  };
-
-  $: {
-    sources["main.ts"] = sourceCode;
-  }
 
   onMount(() => {
     document
@@ -35,7 +25,10 @@
   async function updateGame() {
     error = null;
     viewGame = false;
-    wasm = await compileAsm(sources).catch((err) => (error = err));
+    wasm = await compileAsm({
+      "main.ts": sourceCode,
+      "wasm4.ts": wasm4FileTemplate,
+    }).catch((err) => (error = err));
     viewGame = true;
   }
 </script>
@@ -66,7 +59,7 @@
       </div>
       <div class="grow rounded-md border-2 border-gray-400">
         {#if viewGame}
-          <Wasm4Game />
+          <Wasm4Game { wasm } />
         {:else}
           <p class="text-sm m-3">loading...</p>
         {/if}

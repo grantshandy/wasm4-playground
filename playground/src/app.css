@@ -4,7 +4,7 @@
 
 @layer components {
   .btn-primary {
-    @apply px-2 py-1 text-sm font-semibold rounded-md border-2 bg-gray-300 active:bg-gray-200 border-gray-400;
+    @apply px-2 py-1 text-sm font-semibold rounded-md border-2 bg-gray-300 active:bg-gray-400 border-gray-400;
   }
 
   .container-box {
