@@ -2,6 +2,7 @@
   import { onMount } from "svelte";
 
   export let wasm: Uint8Array;
+  export let focused: boolean;
 
   import * as constants from "../../wasm4/runtimes/web/src/constants";
   import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
@@ -36,7 +37,7 @@
   window.addEventListener("pointermove", onMouseEvent);
 
   const onKeyboardEvent = (event: KeyboardEvent) => {
-    if (event.ctrlKey || event.altKey) {
+    if (event.ctrlKey || event.altKey || !focused) {
       return; // Ignore ctrl/alt modified key presses because they may be the user trying to navigate
     }
 
@@ -46,7 +47,9 @@
     runtime.unlockAudio();
 
     // We're using the keyboard now, hide the mouse cursor for extra immersion
-    document.body.style.cursor = "none";
+    if (focused) {
+      document.body.style.cursor = "none";
+    }
 
     let playerIdx = 0;
     let mask = 0;
@@ -135,7 +138,7 @@
 
     if (mask != 0) {
       event.preventDefault();
-
+    
       // Set or clear the button bit from the next input state
       if (down) {
         gamepad[playerIdx] |= mask;
