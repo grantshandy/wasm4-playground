@@ -4,6 +4,7 @@ import topLevelAwait from "vite-plugin-top-level-await";
 
 // https://vitejs.dev/config/
 export default defineConfig({
+  base: process.env.NODE_ENV === 'production' ? '/wasm4-playground/' : './',
   plugins: [
     svelte(),
     topLevelAwait({
