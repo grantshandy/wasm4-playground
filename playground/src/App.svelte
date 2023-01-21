@@ -39,7 +39,7 @@
 </script>
 
 <main class="min-h-screen px-2 py-8 lg:w-3/4 xl:w-1/2 mx-auto space-y-3">
-  <div class="lg:w-2/3 mx-auto">
+  <div class="lg:w-2/3 mx-auto text-center">
     <h1 class="font-bold text-2xl md:text-3xl">WASM-4 Playground</h1>
     <p>
       Create <span class="line-through">and share</span> (soon!) <a href="https://wasm4.org">WASM-4</a>
@@ -132,6 +132,10 @@
           >memory map reference</a
         >.
       </p>
+    </div>
+    <div>
+      <h3 class="font-semibold text-lg">Where Is the Source Code?</h3>
+      <p><a href="https://github.com/grantshandy/wasm4-playground">Github Repo</a></p>
     </div>
   </div>
 </main>
