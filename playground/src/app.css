@@ -2,6 +2,10 @@
 @tailwind components;
 @tailwind utilities;
 
+.cm-editor {
+  height: 32rem;
+}
+
 a {
   @apply underline;
 }
