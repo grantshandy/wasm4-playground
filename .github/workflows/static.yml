@@ -47,6 +47,9 @@ jobs:
         run: make
 
       - name: Upload artifacts
-        uses: actions/upload-pages-artifact@v1.0.7
-        with:
-          path: playground/dist
+        uses: s0/git-publish-subdir-action@develop
+        env:
+          REPO: self
+          BRANCH: site
+          FOLDER: playground/dist
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
