@@ -2,16 +2,16 @@
 @tailwind components;
 @tailwind utilities;
 
-.cm-editor {
-  height: 32rem;
-}
-
 a {
   @apply underline;
 }
 
 button {
   @apply select-none;
+}
+
+.cm-editor {
+  height: 32rem;
 }
 
 @layer components {
