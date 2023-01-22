@@ -14,6 +14,22 @@
   let mouseY = 0;
   let mouseButtons = 0;
 
+  $: updateGame(wasm);
+
+  const updateGame = async (b: Uint8Array) => {
+    if (!runtime.wasm) {
+      return;
+    }
+
+    runtime.reset(true);
+
+    runtime.pauseState |= constants.PAUSE_REBOOTING;
+    await runtime.load(b);
+    runtime.pauseState &= ~constants.PAUSE_REBOOTING;
+
+    runtime.start();
+  };
+
   // start audio on mouse move
   window.addEventListener("pointerup", () => runtime.unlockAudio());
 
@@ -138,7 +154,7 @@
 
     if (mask != 0) {
       event.preventDefault();
-    
+
       // Set or clear the button bit from the next input state
       if (down) {
         gamepad[playerIdx] |= mask;

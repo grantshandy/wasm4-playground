@@ -10,7 +10,6 @@
   import { compileAsm } from "./asm";
   import { javascript } from "@codemirror/lang-javascript";
 
-  let viewGame: boolean = false;
   let sourceCode: string = mainFileTemplate;
   let wasm: Uint8Array = new Uint8Array();
 
@@ -26,15 +25,10 @@
 
   async function updateGame() {
     error = null;
-    viewGame = false;
     wasm = await compileAsm({
       "main.ts": sourceCode,
       "wasm4.ts": wasm4FileTemplate,
     }).catch((err) => (error = err));
-
-    if (!error) {
-      viewGame = true;
-    }
   }
 </script>
 
@@ -42,7 +36,8 @@
   <div class="lg:w-2/3 mx-auto text-center">
     <h1 class="font-bold text-2xl md:text-3xl">WASM-4 Playground</h1>
     <p>
-      Create <span class="line-through">and share</span> (soon!) <a href="https://wasm4.org">WASM-4</a>
+      Create <span class="line-through">and share</span> (soon!)
+      <a href="https://wasm4.org">WASM-4</a>
       retro games in your web browser.
     </p>
     <p>
@@ -82,11 +77,8 @@
       <div class="w-full flow-root space-x-2">
         <h2 class="float-left text-lg font-semibold">Game Preview</h2>
       </div>
-      {#if viewGame}
-        <Wasm4Game {wasm} focused={gameFocused} />
-      {:else if !error}
-        <p class="text-sm">loading...</p>
-      {:else}
+      <Wasm4Game {wasm} focused={gameFocused} />
+      {#if error}
         <div class="rounded-md p-2 space-y-1 bg-red-700 text-gray-100">
           <div class="w-full select-none items-center flex">
             <h2 class="font-bold text-xl">{error.title}:</h2>
@@ -117,8 +109,8 @@
         Programs on this site are written in <a
           href="https://assemblyscript.org">assemblyscript</a
         >, a variant of
-        <a href="https://typescriptlang.org">typescript</a> (itself is variant
-        of javascript), that is compiled to webassembly.
+        <a href="https://typescriptlang.org">typescript</a> (itself is variant of
+        javascript), that is compiled to webassembly.
       </p>
     </div>
     <div>
@@ -135,7 +127,10 @@
     </div>
     <div>
       <h3 class="font-semibold text-lg">Where Is the Source Code?</h3>
-      <p><a href="https://github.com/grantshandy/wasm4-playground">Github Repo</a></p>
+      <p>
+        <a href="https://github.com/grantshandy/wasm4-playground">Github Repo</a
+        >
+      </p>
     </div>
   </div>
 </main>
