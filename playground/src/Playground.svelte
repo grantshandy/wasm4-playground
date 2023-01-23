@@ -21,9 +21,11 @@
   onMount(() => {
     sourceCode = getCode();
 
-    document
-      .getElementsByClassName("cm-content")[0]
-      .setAttribute("data-enable-grammarly", "false"); // disable grammarly ;)
+    const editors = document.getElementsByClassName("cm-content");
+    for (let i = 0; i < editors.length; i++) {
+      editors[i].setAttribute("data-enable-grammarly", "false"); // disable grammarly ;)
+    }
+
     updateGame();
   });
 
@@ -111,6 +113,44 @@
           </div>
         </div>
       {/if}
+    </div>
+  </div>
+  <div class="lg:w-2/3 mx-auto text-center space-y-2 mt-2">
+    <h1 class="font-bold text-2xl md:text-3xl">FAQ</h1>
+    <div>
+      <h3 class="font-semibold text-lg">What is WASM-4?</h3>
+      <p>
+        <a href="https://wasm4.org">WASM-4</a> is a retro game "console" that
+        runs its games as <a href="https://webassembly.org/">webassembly</a> files,
+        which allows games to be written in almost any programming language.
+      </p>
+    </div>
+    <div>
+      <h3 class="font-semibold text-lg">What Language is This?</h3>
+      <p>
+        Programs on this site are written in <a
+          href="https://assemblyscript.org">assemblyscript</a
+        >, a variant of
+        <a href="https://typescriptlang.org">typescript</a> (itself is variant of
+        javascript), that is compiled to webassembly.
+      </p>
+    </div>
+    <div>
+      <h3 class="font-semibold text-lg">What Functions Do I Have Access To?</h3>
+      <div class="text-left container-box md:w-3/4 mx-auto p-1">
+        <CodeMirror
+          value={wasm4FileTemplate}
+          lang={javascript()}
+          readonly={true}
+        />
+      </div>
+    </div>
+    <div>
+      <h3 class="font-semibold text-lg">Where Is the Source Code?</h3>
+      <p>
+        <a href="https://github.com/grantshandy/wasm4-playground">Github Repo</a
+        >
+      </p>
     </div>
   </div>
 </div>

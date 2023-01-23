@@ -20,3 +20,4 @@
     class="mx-auto my-auto h-10 w-10 block rounded-full border-4 border-gray-700 border-t-gray-100 animate-spin"
   />
 {/if}
+
