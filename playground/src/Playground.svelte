@@ -4,54 +4,91 @@
 
   import mainFileTemplate from "../../wasm4/cli/assets/templates/assemblyscript/src/main?raw";
   import wasm4FileTemplate from "../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
+  import snakeFileTemplate from "./templates/snake.ts?raw";
 
   import Wasm4Game from "./Wasm4Game.svelte";
   import CodeMirror from "svelte-codemirror-editor";
 
   import { compileAsm } from "./assemblyscript";
+
   import { javascript } from "@codemirror/lang-javascript";
   import LzString from "lz-string";
 
+  enum View {
+    Code,
+    Wat,
+  }
+
+  let mounted: boolean = false;
+  let view: View = View.Code;
+
+  $: if (mounted) {
+    let codeBtn = document.getElementById("code");
+    let watBtn = document.getElementById("wat");
+
+    if (view == View.Code) {
+      if (!codeBtn.classList.contains("-translate-y-0.5")) {
+        watBtn.classList.remove("-translate-y-0.5");
+        watBtn.classList.add("bg-gray-300");
+
+        codeBtn.classList.add("-translate-y-0.5");
+        codeBtn.classList.remove("bg-gray-300");
+      }
+    } else {
+      if (!watBtn.classList.contains("-translate-y-0.5")) {
+        codeBtn.classList.remove("-translate-y-0.5");
+        codeBtn.classList.add("bg-gray-300");
+
+        watBtn.classList.add("-translate-y-0.5");
+        watBtn.classList.remove("bg-gray-300");
+      }
+    }
+  }
+
   let sourceCode: string = "";
+
   let wasm: Uint8Array = new Uint8Array();
+  let wat: string = "";
 
   let error: { title: string; msg: string } | null = null;
   let gameFocused = false;
 
   onMount(() => {
-    sourceCode = getCode();
+    mounted = true;
 
-    const editors = document.getElementsByClassName("cm-content");
-    for (let i = 0; i < editors.length; i++) {
-      editors[i].setAttribute("data-enable-grammarly", "false"); // disable grammarly ;)
-    }
-
+    getCode();
     updateGame();
   });
 
   const updateGame = async () => {
     error = null;
-    wasm = await compileAsm({
+
+    let res = await compileAsm({
       "main.ts": sourceCode,
       "wasm4.ts": wasm4FileTemplate,
     }).catch((err) => (error = err));
+    wasm = res.wasm;
+    wat = res.wat;
   };
 
   const getCode = () => {
-    const code = new URL(
+    const as = new URL(
       window.location.href.replace(/#/g, "?")
-    ).searchParams.get("code");
-
-    return code
-      ? LzString.decompressFromEncodedURIComponent(code)
+    ).searchParams.get("asm");
+    history.pushState("", document.title, window.location.pathname);
+    sourceCode = as
+      ? LzString.decompressFromEncodedURIComponent(as)
       : mainFileTemplate;
   };
 
   const copyShareLink = () => {
+    let code: string = sourceCode;
+    let link: string = "asm";
+
     navigator.clipboard.writeText(
       `${
         window.location.href.split("#")[0]
-      }#code=${LzString.compressToEncodedURIComponent(sourceCode)}`
+      }#${link}=${LzString.compressToEncodedURIComponent(code)}`
     );
   };
 
@@ -79,38 +116,71 @@
     </div>
   {/if}
   <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
-    <div
-      class="container-box"
-      on:click={() => (gameFocused = false)}
-      on:keypress={() => {}}
-    >
-      <div class="w-full flow-root space-x-2">
-        <h2 class="float-left text-lg font-semibold">Text Editor</h2>
-        <div class="float-right flex gap-1">
-          <button class="btn-primary" on:click={copyShareLink}
-            >Copy Share Link</button
-          >
-          <button class="btn-primary" on:click={updateGame}
-            >Apply Changes</button
-          >
-        </div>
-      </div>
-      <CodeMirror class="h-full" bind:value={sourceCode} lang={javascript()} />
-    </div>
-    <div
-      class="container-box flex flex-col"
-      on:click={() => (gameFocused = true)}
-      on:keypress={() => {}}
-    >
-      <h2 class="float-left text-lg font-semibold">Game Preview</h2>
-      <Wasm4Game {wasm} focused={gameFocused} />
-      {#if wasm.length > 0}
+    <div class="flex flex-col">
+      <div
+        class="grow container-box"
+        on:click={() => (gameFocused = false)}
+        on:keypress={() => {}}
+      >
         <div class="w-full flow-root space-x-2">
+          <h2 class="float-left text-lg font-semibold">Text Editor</h2>
           <div class="float-right flex gap-1">
-            <button class="btn-primary" on:click={downloadWasm}
-              >Download WASM</button
+            <button class="btn-primary" on:click={copyShareLink}
+              >Copy Share Link</button
+            >
+            <button class="btn-primary" on:click={updateGame}
+              >Apply Changes</button
             >
           </div>
+        </div>
+        {#if view == View.Code}
+          <CodeMirror
+            class="h-full"
+            bind:value={sourceCode}
+            lang={javascript({ typescript: true })}
+          />
+        {:else}
+          <CodeMirror class="h-full" value={wat} readonly={true} />
+        {/if}
+      </div>
+      <div class="w-full flow-root">
+        <div class="float-left inline-block pl-2">
+          <button
+            on:click={() => (view = View.Code)}
+            id="code"
+            class="bg-gray-50 px-2 py-1 rounded-br-md rounded-bl-md border-x-2 border-b-2 border-gray-400 -translate-y-0.5"
+            >Assemblyscript</button
+          >
+          <button
+            on:click={() => (view = View.Wat)}
+            id="wat"
+            class="bg-gray-50 px-2 py-1 rounded-br-md rounded-bl-md border-x-2 border-b-2 border-gray-400 bg-gray-300"
+            >WAT</button
+          >
+        </div>
+        <button
+          on:click={() => {
+            sourceCode = snakeFileTemplate;
+            updateGame();
+          }}
+          class="float-right h-full underline font-bold">try snake!</button
+        >
+      </div>
+    </div>
+    <div class="flex flex-col space-y-1">
+      <div
+        class="grow container-box"
+        on:click={() => (gameFocused = true)}
+        on:keypress={() => {}}
+      >
+        <h2 class="float-left text-lg font-semibold">Game Preview</h2>
+        <Wasm4Game {wasm} focused={gameFocused} />
+      </div>
+      {#if wasm && wasm.length > 0}
+        <div class="w-full flow-root space-x-2">
+            <button class="float-right btn-primary" on:click={downloadWasm}
+              >Download WASM</button
+            >
         </div>
       {/if}
     </div>

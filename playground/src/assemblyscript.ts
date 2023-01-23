@@ -2,7 +2,7 @@ import asc from "assemblyscript/dist/asc.js";
 
 export async function compileAsm(
   sources: { [key: string]: string },
-): Promise<Uint8Array> {
+): Promise<{ wasm: Uint8Array, wat: string }> {
   return asc
     .compileString(
       sources,
@@ -34,6 +34,6 @@ export async function compileAsm(
         throw error;
       }
 
-      return result.binary;
+      return { wasm: result.binary, wat: result.text };
     });
 }

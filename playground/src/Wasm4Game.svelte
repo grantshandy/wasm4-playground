@@ -15,7 +15,7 @@
   let mouseY = 0;
   let mouseButtons = 0;
 
-  $: if (wasm.length > 0) resetGame(wasm);
+  $: if (wasm && wasm.length > 0) resetGame(wasm);
 
   const resetGame = async (b: Uint8Array) => {
     if (!runtime.wasm || !mounted) {
@@ -202,7 +202,9 @@
     runtime.canvas.classList.add("gamecanvas");
     document.getElementById("gameroot").appendChild(runtime.canvas);
 
-    await runtime.load(wasm);
+    if (wasm && wasm.length > 0) {
+      await runtime.load(wasm);
+    }
     runtime.start();
     requestAnimationFrame(onFrame);
 
