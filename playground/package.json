@@ -25,6 +25,7 @@
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.2",
     "assemblyscript": "^0.21.3",
+    "lz-string": "^1.4.4",
     "svelte-codemirror-editor": "^1.1.0"
   }
 }
