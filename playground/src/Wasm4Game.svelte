@@ -8,16 +8,17 @@
   import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
 
   let runtime: Runtime = new Runtime("wasm4-demo");
+  let mounted: boolean = false;
 
   let gamepad = [0, 0, 0, 0];
   let mouseX = 0;
   let mouseY = 0;
   let mouseButtons = 0;
 
-  $: updateGame(wasm);
+  $: if (wasm.length > 0) resetGame(wasm);
 
-  const updateGame = async (b: Uint8Array) => {
-    if (!runtime.wasm) {
+  const resetGame = async (b: Uint8Array) => {
+    if (!runtime.wasm || !mounted) {
       return;
     }
 
@@ -204,6 +205,8 @@
     await runtime.load(wasm);
     runtime.start();
     requestAnimationFrame(onFrame);
+
+    mounted = true;
   });
 </script>
 
