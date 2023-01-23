@@ -40,13 +40,25 @@
       window.location.href.replace(/#/g, "?")
     ).searchParams.get("code");
 
-    return code ? LzString.decompressFromEncodedURIComponent(code) : mainFileTemplate;
+    return code
+      ? LzString.decompressFromEncodedURIComponent(code)
+      : mainFileTemplate;
   };
 
   const copyShareLink = () => {
     navigator.clipboard.writeText(
-      `${window.location.href}#code=${LzString.compressToEncodedURIComponent(sourceCode)}`
+      `${
+        window.location.href.split("#")[0]
+      }#code=${LzString.compressToEncodedURIComponent(sourceCode)}`
     );
+  };
+
+  const downloadWasm = () => {
+    let blob = new Blob([wasm], { type: "application/wasm" });
+    let link = document.createElement("a");
+    link.href = window.URL.createObjectURL(blob);
+    link.download = "playground";
+    link.click();
   };
 </script>
 
@@ -88,10 +100,17 @@
       on:click={() => (gameFocused = true)}
       on:keypress={() => {}}
     >
-      <div class="w-full flow-root space-x-2">
-        <h2 class="float-left text-lg font-semibold">Game Preview</h2>
-      </div>
+      <h2 class="float-left text-lg font-semibold">Game Preview</h2>
       <Wasm4Game {wasm} focused={gameFocused} />
+      {#if wasm.length > 0}
+        <div class="w-full flow-root space-x-2">
+          <div class="float-right flex gap-1">
+            <button class="btn-primary" on:click={downloadWasm}
+              >Download WASM</button
+            >
+          </div>
+        </div>
+      {/if}
     </div>
   </div>
 </div>
