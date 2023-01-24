@@ -153,7 +153,7 @@
             id="code"
             class="bg-gray-50 px-2 py-1 rounded-br-md rounded-bl-md border-x-2 border-b-2 border-gray-400 -translate-y-0.5"
             ><img
-              src="/asm.svg"
+              src="./asm.svg"
               style="width: 1.35rem; height: 1.35rem;"
               alt="Assemblyscript"
             /></button
@@ -163,7 +163,7 @@
             id="wat"
             class="bg-gray-50 px-2 py-1 rounded-br-md rounded-bl-md border-x-2 border-b-2 border-gray-400 bg-gray-300"
             ><img
-              src="/wasm.svg"
+              src="./wasm.svg"
               style="width: 1.35rem; height: 1.35rem;"
               alt="WAT"
             /></button
