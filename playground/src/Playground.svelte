@@ -51,7 +51,8 @@
   let wat: string = "";
 
   let error: { title: string; msg: string } | null = null;
-  let gameFocused = false;
+  let gameFocused: boolean = false;
+  let saved: boolean = localStorage.getItem("sourceCode") ? true : false;
 
   onMount(() => {
     mounted = true;
@@ -145,19 +146,27 @@
           <CodeMirror class="h-full" value={wat} readonly={true} />
         {/if}
       </div>
-      <div class="w-full flow-root">
+      <div class="w-full flow-root select-none">
         <div class="float-left inline-block pl-2">
           <button
             on:click={() => (view = View.Code)}
             id="code"
             class="bg-gray-50 px-2 py-1 rounded-br-md rounded-bl-md border-x-2 border-b-2 border-gray-400 -translate-y-0.5"
-            >Assemblyscript</button
+            ><img
+              src="/asm.svg"
+              style="width: 1.35rem; height: 1.35rem;"
+              alt="Assemblyscript"
+            /></button
           >
           <button
             on:click={() => (view = View.Wat)}
             id="wat"
             class="bg-gray-50 px-2 py-1 rounded-br-md rounded-bl-md border-x-2 border-b-2 border-gray-400 bg-gray-300"
-            >WAT</button
+            ><img
+              src="/wasm.svg"
+              style="width: 1.35rem; height: 1.35rem;"
+              alt="WAT"
+            /></button
           >
         </div>
       </div>
@@ -181,14 +190,22 @@
         <Wasm4Game {wasm} focused={gameFocused} />
       </div>
       {#if wasm && wasm.length > 0}
-        <div class="w-full flow-root space-x-2">
+        <div class="w-full flow-root space-x-2 select-none">
           <div class="inline-block float-right">
+            {#if saved}
+              <button
+                on:click={() => {
+                  localStorage.removeItem("sourceCode");
+                  saved = false;
+                }}
+                class="btn-primary py-0.5">Remove Save</button
+              >
+            {/if}
             <button
-              on:click={() => localStorage.removeItem("sourceCode")}
-              class="btn-primary py-0.5">Remove Save</button
-            >
-            <button
-              on:click={() => localStorage.setItem("sourceCode", sourceCode)}
+              on:click={() => {
+                localStorage.setItem("sourceCode", sourceCode);
+                saved = true;
+              }}
               class="btn-primary py-0.5">Save Changes</button
             >
             <button class="btn-primary py-0.5" on:click={downloadWasm}
@@ -221,7 +238,7 @@
     </div>
     <div>
       <h3 class="font-semibold text-lg">What Functions Do I Have Access To?</h3>
-      <div class="text-left container-box md:w-3/4 mx-auto p-1">
+      <div class="text-left container-box mx-auto p-1">
         <CodeMirror
           value={wasm4FileTemplate}
           lang={javascript()}
