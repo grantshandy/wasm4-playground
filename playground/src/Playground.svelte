@@ -78,6 +78,8 @@
     history.pushState("", document.title, window.location.pathname);
     sourceCode = as
       ? LzString.decompressFromEncodedURIComponent(as)
+      : localStorage.getItem("sourceCode")
+      ? localStorage.getItem("sourceCode")
       : mainFileTemplate;
   };
 
@@ -158,13 +160,6 @@
             >WAT</button
           >
         </div>
-        <button
-          on:click={() => {
-            sourceCode = snakeFileTemplate;
-            updateGame();
-          }}
-          class="float-right h-full underline font-bold">try snake!</button
-        >
       </div>
     </div>
     <div class="flex flex-col space-y-1">
@@ -173,14 +168,33 @@
         on:click={() => (gameFocused = true)}
         on:keypress={() => {}}
       >
-        <h2 class="float-left text-lg font-semibold">Game Preview</h2>
+        <div class="w-full flow-root">
+          <h2 class="float-left text-lg font-semibold">Game Preview</h2>
+          <button
+            on:click={() => {
+              sourceCode = snakeFileTemplate;
+              updateGame();
+            }}
+            class="float-right h-full underline font-bold">try snake!</button
+          >
+        </div>
         <Wasm4Game {wasm} focused={gameFocused} />
       </div>
       {#if wasm && wasm.length > 0}
         <div class="w-full flow-root space-x-2">
-            <button class="float-right btn-primary" on:click={downloadWasm}
+          <div class="inline-block float-right">
+            <button
+              on:click={() => localStorage.removeItem("sourceCode")}
+              class="btn-primary py-0.5">Remove Save</button
+            >
+            <button
+              on:click={() => localStorage.setItem("sourceCode", sourceCode)}
+              class="btn-primary py-0.5">Save Changes</button
+            >
+            <button class="btn-primary py-0.5" on:click={downloadWasm}
               >Download WASM</button
             >
+          </div>
         </div>
       {/if}
     </div>
