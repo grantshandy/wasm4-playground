@@ -24,7 +24,7 @@ button {
   }
 
   .gamecanvas {
-    @apply w-full rounded-md border-2 border-gray-400;
+    @apply w-full rounded-tr-md rounded-tl-md md:rounded-md;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
   }
