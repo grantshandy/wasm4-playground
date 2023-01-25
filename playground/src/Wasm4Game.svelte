@@ -1,12 +1,14 @@
 <script lang="ts">
   import { onMount } from "svelte";
 
-  export let wasm: Uint8Array;
-
   import * as constants from "../../wasm4/runtimes/web/src/constants";
   import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
-  import mobile from "is-mobile";
 
+  import mobile from "is-mobile";
+  import MobileGamepad from "./MobileGamepad.svelte";
+
+  export let wasm: Uint8Array;
+  
   const isMobile: boolean = mobile();
 
   let runtime: Runtime = new Runtime("wasm4-demo");
@@ -228,6 +230,6 @@
 >
   <div class="w-full" id="gameroot" />
   {#if isMobile}
-    <p>you will see a gamepad here soon...</p>
+    <MobileGamepad bind:gamepad />
   {/if}
 </div>
