@@ -45,7 +45,6 @@
   let wat: string = "";
 
   let error: { title: string; msg: string } | null = null;
-  let gameFocused: boolean = false;
   let asSaved: boolean = localStorage.getItem("asSource") ? true : false;
   let roSaved: boolean = localStorage.getItem("roSource") ? true : false;
 
@@ -153,11 +152,7 @@
   {/if}
   <div class="gap-4 grid grid-cols-1 md:grid-cols-2">
     <div class="flex flex-col">
-      <div
-        class="grow container-box"
-        on:click={() => (gameFocused = false)}
-        on:keypress={() => {}}
-      >
+      <div class="grow container-box">
         <div class="w-full flow-root space-x-2">
           <h2 class="float-left text-lg font-semibold">Text Editor</h2>
           <div class="float-right flex gap-1">
@@ -241,11 +236,7 @@
       </div>
     </div>
     <div class="flex flex-col space-y-1">
-      <div
-        class="grow container-box"
-        on:click={() => (gameFocused = true)}
-        on:keypress={() => {}}
-      >
+      <div class="grow container-box">
         <div class="w-full flow-root">
           <h2 class="float-left text-lg font-semibold">Game Preview</h2>
           {#if lang == Language.Assemblyscript}
@@ -268,7 +259,7 @@
           {/if}
         </div>
         {#if firstCompile}
-          <Wasm4Game {wasm} focused={gameFocused} />
+          <Wasm4Game {wasm} />
         {/if}
       </div>
       <div class="w-full flow-root space-x-2 select-none">

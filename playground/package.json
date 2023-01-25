@@ -27,6 +27,7 @@
     "@codemirror/lang-javascript": "^6.1.2",
     "@codemirror/lang-wast": "^6.0.1",
     "assemblyscript": "^0.21.3",
+    "is-mobile": "^3.1.1",
     "lz-string": "^1.4.4",
     "rolandc_wasm": "0.1.1",
     "svelte-codemirror-editor": "^1.1.0"
