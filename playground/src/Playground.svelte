@@ -350,7 +350,7 @@
           class="p-2 rounded-md bg-gray-300 border-2 border-gray-400"
         >
           <h3 class="text-xl font-semibold">
-            <a href="https://assemblyscript.org">Roland</a>
+            <a href="https://github.com/DenialAdams/roland">Roland</a>
           </h3>
           <p>Roland is a work-in-progress programming language.</p>
         </div>
