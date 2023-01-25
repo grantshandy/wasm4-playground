@@ -36,6 +36,10 @@
 
   // update mouse input values on mouse move
   const onMouseEvent = (event: PointerEvent) => {
+    if (!focused) {
+      return;
+    }
+
     document.body.style.cursor = "";
 
     if (event.isPrimary) {
@@ -226,7 +230,7 @@
         check = true;
     })(navigator.userAgent || navigator.vendor || window.opera);
     return check;
-  }
+  };
 
   let mobile: boolean = isMobile();
 </script>
