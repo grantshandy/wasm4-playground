@@ -231,7 +231,7 @@
   on:focus={() => (focused = true)}
   on:blur={() => (focused = false)}
   tabindex="-1"
-  class="w-full border-1 border-gray-400 rounded-md"
+  class="w-full border-2 border-gray-400 rounded-md"
 >
   <div class="w-full" id="gameroot" />
   {#if isMobile}
