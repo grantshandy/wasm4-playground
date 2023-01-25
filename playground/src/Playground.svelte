@@ -2,12 +2,12 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
-  import assemblyscriptMainFileTemplate from "../../wasm4/cli/assets/templates/assemblyscript/src/main?raw";
-  import wasm4HeaderFileTemplate from "../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
-  import wasm4SnakeFileTemplate from "./templates/snake.ts?raw";
-
-  import rolandMainFileTemplate from "./templates/hello.rol?raw";
-  import rolandRunnerFileTemplate from "./templates/runner.rol?raw";
+  import assemblyscriptMainFile from "../../wasm4/cli/assets/templates/assemblyscript/src/main?raw";
+  import assemblyscriptHeaderFile from "../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
+  import assemblyscriptSnakeFile from "./templates/snake.ts?raw";
+  import rolandMainFile from "./templates/hello.rol?raw";
+  import rolandHeaderFile from "./templates/wasm4.rol?raw";
+  import rolandRunnerFile from "./templates/runner.rol?raw";
 
   import Wasm4Game from "./Wasm4Game.svelte";
   import CodeMirror from "svelte-codemirror-editor";
@@ -16,7 +16,7 @@
   import init, { compile_wasm4 as compileRol } from "rolandc_wasm";
 
   import { javascript } from "@codemirror/lang-javascript";
-  import { rust } from "@codemirror/lang-rust";
+  import { wast } from "@codemirror/lang-wast";
   import LzString from "lz-string";
 
   enum View {
@@ -60,7 +60,7 @@
     if (lang == Language.Assemblyscript) {
       let res = await compileAsm({
         "main.ts": asSource,
-        "wasm4.ts": wasm4HeaderFileTemplate,
+        "wasm4.ts": assemblyscriptHeaderFile,
       }).catch((err) => (error = err));
       wasm = res.wasm;
       wat = res.wat;
@@ -88,7 +88,7 @@
     asSource =
       LzString.decompressFromEncodedURIComponent(as) ||
       LzString.decompressFromUTF16(localStorage.getItem("asSource")) ||
-      assemblyscriptMainFileTemplate;
+      assemblyscriptMainFile;
 
     if (as) {
       lang = Language.Assemblyscript;
@@ -100,7 +100,7 @@
     roSource =
       LzString.decompressFromEncodedURIComponent(ro) ||
       LzString.decompressFromUTF16(localStorage.getItem("roSource")) ||
-      rolandMainFileTemplate;
+      rolandMainFile;
 
     if (ro) {
       lang = Language.Roland;
@@ -137,7 +137,7 @@
   };
 </script>
 
-<div transition:fade class="w-full space-y-4">
+<div transition:fade class="w-full space-y-6">
   {#if error}
     <div class="rounded-md p-2 space-y-1 bg-red-700 text-gray-100">
       <div class="w-full select-none items-center flex">
@@ -174,10 +174,19 @@
               lang={javascript({ typescript: true })}
             />
           {:else}
-            <CodeMirror class="h-full" value={wat} readonly={true} />
+            <CodeMirror
+              class="h-full"
+              value={wat}
+              lang={wast()}
+              readonly={true}
+            />
           {/if}
         {:else}
-          <CodeMirror class="h-full" bind:value={roSource} lang={rust()} />
+          <CodeMirror
+            class="h-full"
+            bind:value={roSource}
+            lang={javascript({ typescript: true })}
+          />
         {/if}
       </div>
       <div class="w-full flow-root select-none">
@@ -202,7 +211,7 @@
               ><img
                 src="./wasm.svg"
                 style="width: 1.35rem; height: 1.35rem;"
-                alt="WAT"
+                alt="Wast"
               /></button
             >
           </div>
@@ -242,7 +251,7 @@
           {#if lang == Language.Assemblyscript}
             <button
               on:click={() => {
-                asSource = wasm4SnakeFileTemplate;
+                asSource = assemblyscriptSnakeFile;
                 updateGame();
               }}
               class="float-right h-full underline font-bold">try snake!</button
@@ -250,7 +259,7 @@
           {:else}
             <button
               on:click={() => {
-                roSource = rolandRunnerFileTemplate;
+                roSource = rolandRunnerFile;
                 updateGame();
               }}
               class="float-right h-full underline font-bold"
@@ -264,20 +273,6 @@
       </div>
       <div class="w-full flow-root space-x-2 select-none">
         <div class="inline-block float-left">
-          {#if lang == Language.Assemblyscript ? asSaved : roSaved}
-            <button
-              on:click={() => {
-                if (lang == Language.Assemblyscript) {
-                  localStorage.removeItem("asSource");
-                  asSaved = false;
-                } else {
-                  localStorage.removeItem("roSource");
-                  roSaved = false;
-                }
-              }}
-              class="btn-primary py-0.5">Remove Save</button
-            >
-          {/if}
           <button
             on:click={() => {
               if (lang == Language.Assemblyscript) {
@@ -296,6 +291,20 @@
             }}
             class="btn-primary py-0.5">Save Changes</button
           >
+          {#if lang == Language.Assemblyscript ? asSaved : roSaved}
+            <button
+              on:click={() => {
+                if (lang == Language.Assemblyscript) {
+                  localStorage.removeItem("asSource");
+                  asSaved = false;
+                } else {
+                  localStorage.removeItem("roSource");
+                  roSaved = false;
+                }
+              }}
+              class="btn-primary py-0.5">Remove Save</button
+            >
+          {/if}
         </div>
         <div class="inline-block float-right">
           <button class="btn-primary py-0.5" on:click={copyShareLink}
@@ -310,38 +319,65 @@
       </div>
     </div>
   </div>
-  <div class="lg:w-2/3 mx-auto text-center space-y-2 mt-2">
-    <h1 class="font-bold text-2xl md:text-3xl">FAQ</h1>
-    <div>
-      <h3 class="font-semibold text-lg">What is WASM-4?</h3>
+  <div class="lg:w-2/3 mx-auto text-center space-y-4">
+    <h1 class="font-bold text-4xl">FAQ</h1>
+    <div class="space-y-2">
+      <h2 class="font-semibold text-2xl">What is WASM-4?</h2>
       <p>
         <a href="https://wasm4.org">WASM-4</a> is a retro game "console" that
-        runs its games as <a href="https://webassembly.org/">webassembly</a> files,
+        runs its games as <a href="https://webassembly.org/">webassembly</a> files
         which allows games to be written in almost any programming language.
       </p>
     </div>
-    <div>
-      <h3 class="font-semibold text-lg">What Language is This?</h3>
-      <p>
-        Programs on this site are written in <a
-          href="https://assemblyscript.org">assemblyscript</a
-        >, a variant of
-        <a href="https://typescriptlang.org">typescript</a> (itself is variant of
-        javascript), that is compiled to webassembly.
-      </p>
-    </div>
-    <div>
-      <h3 class="font-semibold text-lg">What Functions Do I Have Access To?</h3>
-      <div class="text-left container-box mx-auto p-1">
-        <CodeMirror
-          value={wasm4HeaderFileTemplate}
-          lang={javascript()}
-          readonly={true}
-        />
+    <div class="space-y-2">
+      <h2 class="font-semibold text-2xl">What Language is This?</h2>
+      <div class="w-full grid grid-cols-2 gap-2">
+        <div
+          class:drop-shadow-xl={lang == Language.Assemblyscript}
+          class="p-2 rounded-md bg-gray-300 border-2 border-gray-400"
+        >
+          <h3 class="text-xl font-semibold">
+            <a href="https://assemblyscript.org">AssemblyScript</a>
+          </h3>
+          <p>
+            AssemblyScript is a variant of
+            <a href="https://typescriptlang.org">typescript</a> which is compiled
+            to webassembly.
+          </p>
+        </div>
+        <div
+          class:drop-shadow-xl={lang == Language.Roland}
+          class="p-2 rounded-md bg-gray-300 border-2 border-gray-400"
+        >
+          <h3 class="text-xl font-semibold">
+            <a href="https://assemblyscript.org">Roland</a>
+          </h3>
+          <p>Roland is a work-in-progress programming language.</p>
+        </div>
       </div>
     </div>
-    <div>
-      <h3 class="font-semibold text-lg">Where Is the Source Code?</h3>
+    <div class="space-y-2">
+      <h2 class="font-semibold text-2xl">
+        What Functions Do I Have Access To?
+      </h2>
+      <div class="text-left container-box mx-auto p-1 shadow-xl">
+        {#if lang == Language.Assemblyscript}
+          <CodeMirror
+            value={assemblyscriptHeaderFile}
+            lang={javascript({ typescript: true })}
+            readonly={true}
+          />
+        {:else}
+          <CodeMirror
+            value={rolandHeaderFile}
+            lang={javascript({ typescript: true })}
+            readonly={true}
+          />
+        {/if}
+      </div>
+    </div>
+    <div class="space-y-2">
+      <h2 class="font-semibold text-lg">Where Is the Source Code?</h2>
       <p>
         <a href="https://github.com/grantshandy/wasm4-playground">Github Repo</a
         >

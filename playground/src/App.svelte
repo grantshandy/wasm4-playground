@@ -12,12 +12,13 @@
 </script>
 
 {#if playground}
-  <div transition:fade class="w-full h-full">
+  <div transition:fade={{ duration: 500 }} class="w-full h-full">
     <svelte:component this={playground} />
   </div>
 {:else}
-  <div
-    class="mx-auto my-auto h-10 w-10 block rounded-full border-4 border-gray-700 border-t-gray-100 animate-spin"
-  />
+  <div class="h-32 w-full flex items-center justify-center">
+    <div
+      class="mx-auto my-auto h-10 w-10 block rounded-full border-4 border-gray-700 border-t-gray-100 animate-spin"
+    />
+  </div>
 {/if}
-

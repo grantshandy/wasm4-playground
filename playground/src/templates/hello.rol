@@ -9,10 +9,6 @@ static SMILEY: [u8; 8] = [
    0b11000011,
 ];
 
-proc start() {
-
-}
-
 proc update() {
    DRAW_COLORS~ = 2;
    text("Hello from Roland!", 10, 10);

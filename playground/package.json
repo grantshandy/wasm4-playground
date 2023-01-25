@@ -25,7 +25,7 @@
   },
   "dependencies": {
     "@codemirror/lang-javascript": "^6.1.2",
-    "@codemirror/lang-rust": "^6.0.1",
+    "@codemirror/lang-wast": "^6.0.1",
     "assemblyscript": "^0.21.3",
     "lz-string": "^1.4.4",
     "rolandc_wasm": "0.1.1",

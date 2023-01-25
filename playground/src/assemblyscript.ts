@@ -19,6 +19,7 @@ export async function compileAsm(
         shrinkLevel: 2,
         converge: true,
         noAssert: true,
+        debug: false,
       },
     )
     .then((result: any) => {
