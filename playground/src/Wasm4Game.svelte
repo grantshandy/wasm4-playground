@@ -3,12 +3,9 @@
 
   import * as constants from "../../wasm4/runtimes/web/src/constants";
   import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
-
   import mobile from "is-mobile";
-  import MobileGamepad from "./MobileGamepad.svelte";
 
   export let wasm: Uint8Array;
-  
   const isMobile: boolean = mobile();
 
   let runtime: Runtime = new Runtime("wasm4-demo");
@@ -220,6 +217,14 @@
 
     mounted = true;
   });
+
+  const buttonDown = (n: number) => {
+    gamepad[0] |= n;
+  };
+
+  const buttonUp = (n: number) => {
+    gamepad[0] &= ~n;
+  };
 </script>
 
 <div
@@ -230,6 +235,106 @@
 >
   <div class="w-full" id="gameroot" />
   {#if isMobile}
-    <MobileGamepad bind:gamepad />
+    <div
+      class="w-full flow-root h-48 p-4 bg-gray-300 select-none rounded-br-md rounded-bl-md"
+    >
+      <div class="float-left h-full flex justify-center items-center">
+        <div class="w-32 h-32 grid grid-cols-3 grid-rows-3">
+          <div
+            on:touchstart={() => {
+              buttonDown(constants.BUTTON_UP);
+              buttonDown(constants.BUTTON_LEFT);
+            }}
+            on:touchend={() => {
+              buttonUp(constants.BUTTON_UP);
+              buttonUp(constants.BUTTON_LEFT);
+            }}
+          />
+          <div
+            on:touchstart={() => buttonDown(constants.BUTTON_UP)}
+            on:touchend={() => buttonUp(constants.BUTTON_UP)}
+            class="bg-gray-600 rounded-tr-xl rounded-tl-xl"
+            class:border-t-4={(gamepad[0] & constants.BUTTON_UP) != 0}
+            class:border-gray-800={(gamepad[0] & constants.BUTTON_UP) != 0}
+          />
+          <div
+            on:touchstart={() => {
+              buttonDown(constants.BUTTON_UP);
+              buttonDown(constants.BUTTON_RIGHT);
+            }}
+            on:touchend={() => {
+              buttonUp(constants.BUTTON_UP);
+              buttonUp(constants.BUTTON_RIGHT);
+            }}
+          />
+          <div
+            on:touchstart={() => buttonDown(constants.BUTTON_LEFT)}
+            on:touchend={() => buttonUp(constants.BUTTON_LEFT)}
+            class="bg-gray-600 rounded-tl-xl rounded-bl-xl"
+            class:border-l-4={(gamepad[0] & constants.BUTTON_LEFT) != 0}
+            class:border-gray-800={(gamepad[0] & constants.BUTTON_LEFT) != 0}
+          />
+          <div class="bg-gray-600">
+            <div class="w-full h-full bg-gray-500 rounded-full" />
+          </div>
+          <div
+            on:touchstart={() => buttonDown(constants.BUTTON_RIGHT)}
+            on:touchend={() => buttonUp(constants.BUTTON_RIGHT)}
+            class="bg-gray-600 rounded-tr-xl rounded-br-xl"
+            class:border-r-4={(gamepad[0] & constants.BUTTON_RIGHT) != 0}
+            class:border-gray-800={(gamepad[0] & constants.BUTTON_RIGHT) != 0}
+          />
+          <div
+            on:touchstart={() => {
+              buttonDown(constants.BUTTON_DOWN);
+              buttonDown(constants.BUTTON_LEFT);
+            }}
+            on:touchend={() => {
+              buttonUp(constants.BUTTON_DOWN);
+              buttonUp(constants.BUTTON_LEFT);
+            }}
+          />
+          <div
+            on:touchstart={() => buttonDown(constants.BUTTON_DOWN)}
+            on:touchend={() => buttonUp(constants.BUTTON_DOWN)}
+            class="bg-gray-600 rounded-br-xl rounded-bl-xl"
+            class:border-b-4={(gamepad[0] & constants.BUTTON_DOWN) != 0}
+            class:border-gray-800={(gamepad[0] & constants.BUTTON_DOWN) != 0}
+          />
+          <div
+            on:touchstart={() => {
+              buttonDown(constants.BUTTON_DOWN);
+              buttonDown(constants.BUTTON_RIGHT);
+            }}
+            on:touchend={() => {
+              buttonUp(constants.BUTTON_DOWN);
+              buttonUp(constants.BUTTON_RIGHT);
+            }}
+          />
+        </div>
+      </div>
+      <div class="float-right h-full flex items-center pt-10 md:pr-3">
+        <div class="h-2/5 w-full space-x-4 flex text-xs font-bold text-center">
+          <div class="bg-gray-100 rounded-md w-16 h-16 p-1 relative">
+            <span class="absolute bottom-0 right-1">X</span>
+            <div
+              on:touchstart={() => buttonDown(constants.BUTTON_X)}
+              on:touchend={() => buttonUp(constants.BUTTON_X)}
+              class="w-full h-full rounded-full bg-red-500"
+              class:bg-red-600={(gamepad[0] & constants.BUTTON_X) != 0}
+            />
+          </div>
+          <div class="bg-gray-100 rounded-md w-16 h-16 p-1 relative">
+            <span class="absolute bottom-0 right-1">Z</span>
+            <div
+              on:touchstart={() => buttonDown(constants.BUTTON_Z)}
+              on:touchend={() => buttonUp(constants.BUTTON_Z)}
+              class="w-full h-full rounded-full bg-red-500"
+              class:bg-red-600={(gamepad[0] & constants.BUTTON_Z) != 0}
+            />
+          </div>
+        </div>
+      </div>
+    </div>
   {/if}
 </div>
