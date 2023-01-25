@@ -294,7 +294,9 @@
           <div />
         </div>
       </div>
-      <div class="bg-red-500" />
+      <div class="bg-gray-400 flex justify-center items-center">
+        <p>mobile gamepad is a work in progress</p>
+      </div>
     </div>
   {/if}
 </div>

@@ -20,18 +20,23 @@
   import LzString from "lz-string";
 
   enum View {
-    Code,
-    Wat,
+    Code = "code",
+    Wat = "wat",
   }
 
   enum Language {
-    Assemblyscript,
-    Roland,
+    Assemblyscript = "asm",
+    Roland = "rol",
   }
 
-  let view: View = View.Code;
-  let lang: Language = Language.Assemblyscript;
-  let rolandStarted: bool = false;
+  let view: View = (localStorage.getItem("view") as View) || View.Code;
+  $: localStorage.setItem("view", view.toString());
+  let lang: Language =
+    (localStorage.getItem("lang") as Language) || Language.Assemblyscript;
+  $: localStorage.setItem("lang", lang.toString());
+
+  let rolandStarted: boolean = false;
+  let firstCompile: boolean = false;
 
   let roSource: string = "";
   let asSource: string = "";
@@ -46,12 +51,6 @@
 
   onMount(() => {
     getCode();
-
-    if (lang == Language.Roland) {
-      init();
-      rolandStarted = true;
-    }
-
     updateGame();
   });
 
@@ -72,9 +71,13 @@
       try {
         wasm = compileRol(roSource);
       } catch (msg) {
-        error = { title: "error compiling roland source", msg };
+        error = { title: "error compiling roland", msg };
       }
       wat = "";
+    }
+
+    if (!firstCompile) {
+      firstCompile = true;
     }
   };
 
@@ -82,20 +85,26 @@
     const as = new URL(
       window.location.href.replace(/#/g, "?")
     ).searchParams.get("asm");
-    asSource = as
-      ? LzString.decompressFromEncodedURIComponent(as)
-      : localStorage.getItem("asSource")
-      ? LzString.decompressFromUTF16(localStorage.getItem("asSource"))
-      : assemblyscriptMainFileTemplate;
+    asSource =
+      LzString.decompressFromEncodedURIComponent(as) ||
+      LzString.decompressFromUTF16(localStorage.getItem("asSource")) ||
+      assemblyscriptMainFileTemplate;
+
+    if (as) {
+      lang = Language.Assemblyscript;
+    }
 
     const ro = new URL(
       window.location.href.replace(/#/g, "?")
     ).searchParams.get("rol");
-    roSource = ro
-      ? LzString.decompressFromEncodedURIComponent(ro)
-      : localStorage.getItem("roSource")
-      ? LzString.decompressFromUTF16(localStorage.getItem("roSource"))
-      : rolandMainFileTemplate;
+    roSource =
+      LzString.decompressFromEncodedURIComponent(ro) ||
+      LzString.decompressFromUTF16(localStorage.getItem("roSource")) ||
+      rolandMainFileTemplate;
+
+    if (ro) {
+      lang = Language.Roland;
+    }
 
     history.pushState("", document.title, window.location.pathname);
   };
@@ -105,11 +114,11 @@
     let link: string;
 
     if (lang == Language.Assemblyscript) {
-      code = "asm";
-      link = asSource;
+      link = "asm";
+      code = asSource;
     } else {
-      code = "rol";
-      link = roSource;
+      link = "rol";
+      code = roSource;
     }
 
     navigator.clipboard.writeText(
@@ -198,17 +207,22 @@
             >
           </div>
         {/if}
-
         <div class="float-right flex pt-1">
           <button
-            on:click={() => (lang = Language.Assemblyscript)}
+            on:click={() => {
+              lang = Language.Assemblyscript;
+              updateGame();
+            }}
             class:bg-gray-100={lang != Language.Assemblyscript}
             class:font-normal={lang != Language.Assemblyscript}
             class="btn-primary py-0.5 rounded-tr-none rounded-br-none"
             >Assemblyscript</button
           >
           <button
-            on:click={() => (lang = Language.Roland)}
+            on:click={() => {
+              lang = Language.Roland;
+              updateGame();
+            }}
             class:bg-gray-100={lang != Language.Roland}
             class:font-normal={lang != Language.Roland}
             class="btn-primary py-0.5 rounded-tl-none rounded-bl-none border-l-0"
@@ -240,11 +254,13 @@
                 updateGame();
               }}
               class="float-right h-full underline font-bold"
-              >try an endless runner!</button
+              >try a platformer!</button
             >
           {/if}
         </div>
-        <Wasm4Game {wasm} focused={gameFocused} />
+        {#if firstCompile}
+          <Wasm4Game {wasm} focused={gameFocused} />
+        {/if}
       </div>
       <div class="w-full flow-root space-x-2 select-none">
         <div class="inline-block float-left">
