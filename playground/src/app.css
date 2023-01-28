@@ -14,22 +14,30 @@ button {
   height: 45rem;
 }
 
-.gamepad-button {
-  @apply absolute h-16 w-16 rounded-full text-gray-50 border-4 border-rose-700 bg-rose-600 flex items-center justify-center
+.btn-gamepad-active {
+  @apply bg-red-dim dark:bg-red-dim-dark;
 }
 
 @layer components {
   .btn-primary {
-    @apply px-2 py-1 text-sm font-semibold select-none rounded-md border-2 bg-gray-300 active:bg-gray-400 border-gray-400;
+    @apply px-2 py-1 text-sm font-semibold select-none rounded-md bg-bg3 dark:bg-bg3-dark active:bg-bg4 active:dark:bg-bg4-dark border-2 border-bg2 dark:border-bg2-dark;
   }
 
   .container-box {
-    @apply py-2 px-3 space-y-2 rounded-md border-2 border-gray-400;
+    @apply py-2 px-3 space-y-2 rounded-md border-2 border-bg2 dark:border-bg2-dark;
   }
 
   .gamecanvas {
     @apply w-full rounded-tr-md rounded-tl-md md:rounded-md;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
+  }
+
+  .selected {
+    @apply -translate-y-0.5 bg-bg dark:bg-bg-dark !important;
+  }
+
+  .lang-selected {
+    @apply bg-bg1 dark:bg-bg1-dark !important;
   }
 }

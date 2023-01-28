@@ -1,49 +1,5 @@
 import * as w4 from "./wasm4";
 
-const FRUIT = memory.data<u8>([
-    0b11111001,
-    0b11110111,
-    0b11000011,
-    0b10000001,
-    0b00000000,
-    0b00000000,
-    0b10000001,
-    0b11000011,
-]);
-
-const BRICK = memory.data<u8>([
-    0b00000000,
-    0b01110111,
-    0b00000000,
-    0b11011101,
-    0b00000000,
-    0b01110111,
-    0b00000000,
-    0b11011101,
-]);
-
-const SNAKE_HEAD = memory.data<u8>([
-    0b11000011,
-    0b10000001,
-    0b00100100,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b10000001,
-]);
-
-const SNAKE_BODY = memory.data<u8>([
-    0b10000001,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b00000000,
-    0b10000001,
-]);
-
 const TILE_SIZE: u8 = 8;
 const GAME_SIZE: u8 = u8(w4.SCREEN_SIZE / TILE_SIZE);
 const MOVE_DURATION_FRAMES: u8 = 12;
@@ -309,3 +265,47 @@ class Direction {
 
     private constructor(readonly x: i8, readonly y: i8) {}
 }
+
+const FRUIT = memory.data<u8>([
+    0b11111001,
+    0b11110111,
+    0b11000011,
+    0b10000001,
+    0b00000000,
+    0b00000000,
+    0b10000001,
+    0b11000011,
+]);
+
+const BRICK = memory.data<u8>([
+    0b00000000,
+    0b01110111,
+    0b00000000,
+    0b11011101,
+    0b00000000,
+    0b01110111,
+    0b00000000,
+    0b11011101,
+]);
+
+const SNAKE_HEAD = memory.data<u8>([
+    0b11000011,
+    0b10000001,
+    0b00100100,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b10000001,
+]);
+
+const SNAKE_BODY = memory.data<u8>([
+    0b10000001,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b00000000,
+    0b10000001,
+]);

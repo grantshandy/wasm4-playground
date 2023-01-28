@@ -1,12 +1,20 @@
 <script lang="ts">
   import { onMount } from "svelte";
-
-  import * as constants from "../../wasm4/runtimes/web/src/constants";
-  import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
   import mobile from "is-mobile";
 
+  import * as constants from "../../wasm4/runtimes/web/src/constants";
+  import {
+    BUTTON_UP,
+    BUTTON_LEFT,
+    BUTTON_RIGHT,
+    BUTTON_DOWN,
+    BUTTON_X,
+    BUTTON_Z,
+  } from "../../wasm4/runtimes/web/src/constants";
+  import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
+
   export let wasm: Uint8Array;
-  const isMobile: boolean = mobile();
+  let showGamepad: boolean = mobile();
 
   let runtime: Runtime = new Runtime("wasm4-demo");
   let mounted: boolean = false;
@@ -218,12 +226,13 @@
     mounted = true;
   });
 
-  const buttonDown = (n: number) => {
-    gamepad[0] |= n;
-  };
-
-  const buttonUp = (n: number) => {
-    gamepad[0] &= ~n;
+  const isButtonDown = (g: number, b: number) => (g & b) != 0;
+  const buttonDown = (n: number) => (gamepad[0] |= n);
+  const buttonUp = (n: number) => (gamepad[0] &= ~n);
+  const mouseEnter = (event: any, n: number) => {
+    if (event.buttons == 1) {
+      buttonDown(n);
+    }
   };
 </script>
 
@@ -231,106 +240,124 @@
   on:focus={() => (focused = true)}
   on:blur={() => (focused = false)}
   tabindex="-1"
-  class="w-full border-2 border-gray-400 rounded-md"
+  class="w-full border-2 border-bg2 dark:border-bg2-dark rounded-md"
 >
   <div class="w-full" id="gameroot" />
-  {#if isMobile}
+  {#if showGamepad}
     <div
-      class="w-full flow-root h-48 p-4 bg-gray-300 select-none rounded-br-md rounded-bl-md"
+      class="w-full flow-root h-48 p-4 bg-bg2 dark:bg-bg2-dark dark:border-bg2-dark select-none rounded-br-md rounded-bl-md"
     >
       <div class="float-left h-full flex justify-center items-center">
         <div class="w-32 h-32 grid grid-cols-3 grid-rows-3">
           <div
-            on:touchstart={() => {
-              buttonDown(constants.BUTTON_UP);
-              buttonDown(constants.BUTTON_LEFT);
-            }}
-            on:touchend={() => {
-              buttonUp(constants.BUTTON_UP);
-              buttonUp(constants.BUTTON_LEFT);
-            }}
+            on:mousedown={() => buttonDown(BUTTON_UP | BUTTON_LEFT)}
+            on:mouseup={() => buttonUp(BUTTON_UP | BUTTON_LEFT)}
+            on:mouseenter={(event) =>
+              mouseEnter(event, BUTTON_UP | BUTTON_LEFT)}
+            on:mouseleave={() => buttonUp(BUTTON_UP | BUTTON_LEFT)}
+            on:touchstart={() => buttonDown(BUTTON_UP | BUTTON_LEFT)}
+            on:touchend={() => buttonUp(BUTTON_UP | BUTTON_LEFT)}
           />
           <div
-            on:touchstart={() => buttonDown(constants.BUTTON_UP)}
-            on:touchend={() => buttonUp(constants.BUTTON_UP)}
-            class="bg-gray-600 rounded-tr-xl rounded-tl-xl"
-            class:border-t-4={(gamepad[0] & constants.BUTTON_UP) != 0}
-            class:border-gray-800={(gamepad[0] & constants.BUTTON_UP) != 0}
+            on:mousedown={() => buttonDown(BUTTON_UP)}
+            on:mouseup={() => buttonUp(BUTTON_UP)}
+            on:mouseenter={(event) => mouseEnter(event, BUTTON_UP)}
+            on:mouseleave={() => buttonUp(BUTTON_UP)}
+            on:touchstart={() => buttonDown(BUTTON_UP)}
+            on:touchend={() => buttonUp(BUTTON_UP)}
+            class="bg-bg4 dark:bg-bg4-dark rounded-tr-xl rounded-tl-xl"
+            class:border-t-8={isButtonDown(gamepad[0], BUTTON_UP)}
+            class:border-gray={isButtonDown(gamepad[0], BUTTON_UP)}
           />
           <div
-            on:touchstart={() => {
-              buttonDown(constants.BUTTON_UP);
-              buttonDown(constants.BUTTON_RIGHT);
-            }}
-            on:touchend={() => {
-              buttonUp(constants.BUTTON_UP);
-              buttonUp(constants.BUTTON_RIGHT);
-            }}
+            on:mousedown={() => buttonDown(BUTTON_UP | BUTTON_RIGHT)}
+            on:mouseup={() => buttonUp(BUTTON_UP | BUTTON_RIGHT)}
+            on:mouseenter={(event) =>
+              mouseEnter(event, BUTTON_UP | BUTTON_RIGHT)}
+            on:mouseleave={() => buttonUp(BUTTON_UP | BUTTON_RIGHT)}
+            on:touchstart={() => buttonDown(BUTTON_UP | BUTTON_RIGHT)}
+            on:touchend={() => buttonUp(BUTTON_UP | BUTTON_RIGHT)}
           />
           <div
-            on:touchstart={() => buttonDown(constants.BUTTON_LEFT)}
-            on:touchend={() => buttonUp(constants.BUTTON_LEFT)}
-            class="bg-gray-600 rounded-tl-xl rounded-bl-xl"
-            class:border-l-4={(gamepad[0] & constants.BUTTON_LEFT) != 0}
-            class:border-gray-800={(gamepad[0] & constants.BUTTON_LEFT) != 0}
+            on:mousedown={() => buttonDown(BUTTON_LEFT)}
+            on:mouseup={() => buttonUp(BUTTON_LEFT)}
+            on:mouseenter={(event) => mouseEnter(event, BUTTON_LEFT)}
+            on:mouseleave={() => buttonUp(BUTTON_LEFT)}
+            on:touchstart={() => buttonDown(BUTTON_LEFT)}
+            on:touchend={() => buttonUp(BUTTON_LEFT)}
+            class="bg-bg4 dark:bg-bg4-dark rounded-tl-xl rounded-bl-xl"
+            class:border-l-8={isButtonDown(gamepad[0], BUTTON_LEFT)}
+            class:border-gray={isButtonDown(gamepad[0], BUTTON_LEFT)}
           />
-          <div class="bg-gray-600">
-            <div class="w-full h-full bg-gray-500 rounded-full" />
+          <div class="bg-bg4 dark:bg-bg4-dark">
+            <div class="w-full h-full bg-bg3 dark:bg-bg3-dark rounded-full" />
           </div>
           <div
-            on:touchstart={() => buttonDown(constants.BUTTON_RIGHT)}
-            on:touchend={() => buttonUp(constants.BUTTON_RIGHT)}
-            class="bg-gray-600 rounded-tr-xl rounded-br-xl"
-            class:border-r-4={(gamepad[0] & constants.BUTTON_RIGHT) != 0}
-            class:border-gray-800={(gamepad[0] & constants.BUTTON_RIGHT) != 0}
+            on:mousedown={() => buttonDown(BUTTON_RIGHT)}
+            on:mouseup={() => buttonUp(BUTTON_RIGHT)}
+            on:mouseenter={(event) => mouseEnter(event, BUTTON_RIGHT)}
+            on:mouseleave={() => buttonUp(BUTTON_RIGHT)}
+            on:touchstart={() => buttonDown(BUTTON_RIGHT)}
+            on:touchend={() => buttonUp(BUTTON_RIGHT)}
+            class="bg-bg4 dark:bg-bg4-dark rounded-tr-xl rounded-br-xl"
+            class:border-r-8={isButtonDown(gamepad[0], BUTTON_RIGHT)}
+            class:border-gray={isButtonDown(gamepad[0], BUTTON_RIGHT)}
           />
           <div
-            on:touchstart={() => {
-              buttonDown(constants.BUTTON_DOWN);
-              buttonDown(constants.BUTTON_LEFT);
-            }}
-            on:touchend={() => {
-              buttonUp(constants.BUTTON_DOWN);
-              buttonUp(constants.BUTTON_LEFT);
-            }}
+            on:mousedown={() => buttonDown(BUTTON_DOWN | BUTTON_LEFT)}
+            on:mouseup={() => buttonUp(BUTTON_DOWN | BUTTON_LEFT)}
+            on:mouseenter={(event) =>
+              mouseEnter(event, BUTTON_DOWN | BUTTON_LEFT)}
+            on:mouseleave={() => buttonUp(BUTTON_DOWN | BUTTON_LEFT)}
+            on:touchstart={() => buttonDown(BUTTON_DOWN | BUTTON_LEFT)}
+            on:touchend={() => buttonUp(BUTTON_DOWN | BUTTON_LEFT)}
           />
           <div
-            on:touchstart={() => buttonDown(constants.BUTTON_DOWN)}
-            on:touchend={() => buttonUp(constants.BUTTON_DOWN)}
-            class="bg-gray-600 rounded-br-xl rounded-bl-xl"
-            class:border-b-4={(gamepad[0] & constants.BUTTON_DOWN) != 0}
-            class:border-gray-800={(gamepad[0] & constants.BUTTON_DOWN) != 0}
+            on:mousedown={() => buttonDown(BUTTON_DOWN)}
+            on:mouseup={() => buttonUp(BUTTON_DOWN)}
+            on:mouseenter={(event) => mouseEnter(event, BUTTON_DOWN)}
+            on:mouseleave={() => buttonUp(BUTTON_DOWN)}
+            on:touchstart={() => buttonDown(BUTTON_DOWN)}
+            on:touchend={() => buttonUp(BUTTON_DOWN)}
+            class="bg-bg4 dark:bg-bg4-dark rounded-br-xl rounded-bl-xl"
+            class:border-b-8={isButtonDown(gamepad[0], BUTTON_DOWN)}
+            class:border-gray={isButtonDown(gamepad[0], BUTTON_DOWN)}
           />
           <div
-            on:touchstart={() => {
-              buttonDown(constants.BUTTON_DOWN);
-              buttonDown(constants.BUTTON_RIGHT);
-            }}
-            on:touchend={() => {
-              buttonUp(constants.BUTTON_DOWN);
-              buttonUp(constants.BUTTON_RIGHT);
-            }}
+            on:mousedown={() => buttonDown(BUTTON_DOWN | BUTTON_RIGHT)}
+            on:mouseup={() => buttonUp(BUTTON_DOWN | BUTTON_RIGHT)}
+            on:mouseenter={(event) =>
+              mouseEnter(event, BUTTON_DOWN | BUTTON_RIGHT)}
+            on:mouseleave={() => buttonUp(BUTTON_DOWN | BUTTON_RIGHT)}
+            on:touchstart={() => buttonDown(BUTTON_DOWN | BUTTON_RIGHT)}
+            on:touchend={() => buttonUp(BUTTON_DOWN | BUTTON_RIGHT)}
           />
         </div>
       </div>
       <div class="float-right h-full flex items-center pt-10 md:pr-3">
-        <div class="h-2/5 w-full space-x-4 flex text-xs font-bold text-center">
-          <div class="bg-gray-100 rounded-md w-16 h-16 p-1 relative">
+        <div
+          class="h-2/5 w-full space-x-4 flex text-xs text-bg-dark font-bold text-center"
+        >
+          <div class="bg-bg rounded-md w-16 h-16 p-1 relative">
             <span class="absolute bottom-0 right-1">X</span>
             <div
-              on:touchstart={() => buttonDown(constants.BUTTON_X)}
-              on:touchend={() => buttonUp(constants.BUTTON_X)}
-              class="w-full h-full rounded-full bg-red-500"
-              class:bg-red-600={(gamepad[0] & constants.BUTTON_X) != 0}
+              on:touchstart={() => buttonDown(BUTTON_X)}
+              on:touchend={() => buttonUp(BUTTON_X)}
+              on:mousedown={() => buttonDown(BUTTON_X)}
+              on:mouseup={() => buttonUp(BUTTON_X)}
+              class="w-full h-full rounded-full bg-red-dark"
+              class:btn-gamepad-active={isButtonDown(gamepad[0], BUTTON_X)}
             />
           </div>
-          <div class="bg-gray-100 rounded-md w-16 h-16 p-1 relative">
+          <div class="bg-bg rounded-md w-16 h-16 p-1 relative">
             <span class="absolute bottom-0 right-1">Z</span>
             <div
-              on:touchstart={() => buttonDown(constants.BUTTON_Z)}
-              on:touchend={() => buttonUp(constants.BUTTON_Z)}
-              class="w-full h-full rounded-full bg-red-500"
-              class:bg-red-600={(gamepad[0] & constants.BUTTON_Z) != 0}
+              on:touchstart={() => buttonDown(BUTTON_Z)}
+              on:touchend={() => buttonUp(BUTTON_Z)}
+              on:mousedown={() => buttonDown(BUTTON_Z)}
+              on:mouseup={() => buttonUp(BUTTON_Z)}
+              class="w-full h-full rounded-full bg-red-dark"
+              class:btn-gamepad-active={isButtonDown(gamepad[0], BUTTON_Z)}
             />
           </div>
         </div>
@@ -338,3 +365,6 @@
     </div>
   {/if}
 </div>
+<button class="underline" on:click={() => (showGamepad = !showGamepad)}
+  >toggle on-screen gamepad</button
+>
