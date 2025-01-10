@@ -2,7 +2,7 @@
   import { onMount } from "svelte";
   import mobile from "is-mobile";
 
-  import * as constants from "../../wasm4/runtimes/web/src/constants";
+  import * as constants from "../../../wasm4/runtimes/web/src/constants";
   import {
     BUTTON_UP,
     BUTTON_LEFT,
@@ -10,8 +10,8 @@
     BUTTON_DOWN,
     BUTTON_X,
     BUTTON_Z,
-  } from "../../wasm4/runtimes/web/src/constants";
-  import { Runtime } from "../../wasm4/runtimes/web/src/runtime";
+  } from "../../../wasm4/runtimes/web/src/constants";
+  import { Runtime } from "../../../wasm4/runtimes/web/src/runtime";
 
   export let wasm: Uint8Array;
   let showGamepad: boolean = mobile();
