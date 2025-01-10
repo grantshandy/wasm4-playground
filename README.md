@@ -1,5 +1,11 @@
 # wasm4-playground
-Write retro video games in assemblyscript.
+
+Write retro video games in AssemblyScript.
+[Visit](https://grantshandy.github.io/wasm4-playground)!
+
+![screenshot](./.github/screenshot.png)
+
+<hr/>
 
 Note that this repository contains submodules, so in order to clone and build you must use:
 ```

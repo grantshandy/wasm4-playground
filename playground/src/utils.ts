@@ -18,9 +18,6 @@ export type Source = { text: string; lang: Language; };
 export const getSourceOrDefault = (lang?: Language): Source => {
     const sp = new URL(window.location.href.replace(/#/g, "?")).searchParams;
 
-    console.log(sp.get("rol"));
-    console.log(sp.get("ts"));
-
     if (!lang) {
         lang = sp.get(Language.Roland)
             ? Language.Roland

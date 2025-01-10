@@ -120,7 +120,7 @@
             <button
                 on:click={() => switchLanguage(Language.AssemblyScript)}
                 disabled={$source.lang == Language.AssemblyScript}
-                class="btn btn-sm join-item">Assemblyscript</button
+                class="btn btn-sm join-item">AssemblyScript</button
             >
             <button
                 on:click={() => switchLanguage(Language.Roland)}

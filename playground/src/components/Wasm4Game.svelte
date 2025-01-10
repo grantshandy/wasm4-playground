@@ -243,7 +243,7 @@
   class="w-full rounded-md relative"
 >
   <button
-    class="italic text-xs underline absolute bottom-2 right-2 z-999"
+    class="italic text-xs underline absolute bottom-2 right-2"
     on:click={() => (showGamepad = !showGamepad)}>toggle gamepad</button
   >
   <div class="w-full" id="gameroot" />

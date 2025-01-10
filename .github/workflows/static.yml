@@ -42,7 +42,7 @@ jobs:
           node-version: 18
           cache: "npm"
           cache-dependency-path: "playground/package-lock.json"
-          
+
       - name: Build Site
         run: make
 
