@@ -2,42 +2,12 @@
 @tailwind components;
 @tailwind utilities;
 
-a {
-  @apply underline;
-}
-
-button {
-  @apply select-none;
-}
-
-.cm-editor {
-  height: 45rem;
-}
-
-.btn-gamepad-active {
-  @apply bg-red-dim dark:bg-red-dim-dark;
-}
-
-@layer components {
-  .btn-primary {
-    @apply px-2 py-1 text-sm font-semibold select-none rounded-md bg-bg3 dark:bg-bg3-dark active:bg-bg4 active:dark:bg-bg4-dark border-2 border-bg2 dark:border-bg2-dark;
-  }
-
-  .container-box {
-    @apply py-2 px-3 space-y-2 rounded-md border-2 border-bg2 dark:border-bg2-dark;
-  }
-
-  .gamecanvas {
+.gamecanvas {
     @apply w-full rounded-tr-md rounded-tl-md md:rounded-md;
     image-rendering: pixelated;
     image-rendering: crisp-edges;
-  }
+}
 
-  .selected {
-    @apply -translate-y-0.5 bg-bg dark:bg-bg-dark !important;
-  }
-
-  .lang-selected {
-    @apply bg-bg1 dark:bg-bg1-dark !important;
-  }
+a {
+    @apply underline;
 }

@@ -13,8 +13,9 @@
     "@sveltejs/vite-plugin-svelte": "^2.0.0",
     "@tsconfig/svelte": "^3.0.0",
     "autoprefixer": "^10.4.13",
+    "daisyui": "^4.12.23",
     "postcss": "^8.4.21",
-    "svelte": "^3.54.0",
+    "svelte": "^3.59.2",
     "svelte-check": "^2.10.0",
     "tailwindcss": "^3.2.4",
     "tslib": "^2.4.1",
@@ -27,11 +28,9 @@
     "@codemirror/lang-javascript": "^6.1.2",
     "@codemirror/lang-wast": "^6.0.1",
     "assemblyscript": "^0.21.3",
-    "cm6-theme-gruvbox-dark": "^0.2.0",
-    "cm6-theme-gruvbox-light": "^0.2.0",
     "is-mobile": "^3.1.1",
     "lz-string": "^1.4.4",
     "rolandc_wasm": "0.1.1",
-    "svelte-codemirror-editor": "^1.1.0"
+    "svelte-codemirror-editor": "^1.4.0"
   }
 }

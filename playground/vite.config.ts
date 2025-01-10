@@ -21,4 +21,7 @@ export default defineConfig({
       "rolandc_wasm",
     ],
   },
+  define: {
+    WASM4_GAMEDEV_MODE: "true",
+  }
 });
