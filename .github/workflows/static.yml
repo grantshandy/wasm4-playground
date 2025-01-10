@@ -40,6 +40,9 @@ jobs:
         with:
           version: 9
 
+      - name: Install esbuild
+        run: npm install -g esbuild
+
       - name: Build Site
         run: make
 
