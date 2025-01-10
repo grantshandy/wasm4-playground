@@ -35,13 +35,10 @@ jobs:
 
       - name: Setup Pages
         uses: actions/configure-pages@v2
-        
-      - name: Cache Node.js
-        uses: actions/setup-node@v3
+
+      - uses: pnpm/action-setup@v4
         with:
-          node-version: 18
-          cache: "npm"
-          cache-dependency-path: "playground/package-lock.json"
+          version: 9
 
       - name: Build Site
         run: make

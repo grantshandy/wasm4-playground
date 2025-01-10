@@ -2,12 +2,16 @@
   import { onMount } from "svelte";
   import { fade } from "svelte/transition";
 
+  import initRoland from "rolandc_wasm";
   import { compileGame, error } from "./utils";
 
   import Preview from "./components/Preview.svelte";
   import Editor from "./components/Editor.svelte";
 
-  onMount(() => compileGame());
+  onMount(() => {
+    initRoland();
+    compileGame();
+  });
 </script>
 
 <div transition:fade class="w-full space-y-6">

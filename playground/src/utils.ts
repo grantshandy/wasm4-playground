@@ -1,7 +1,7 @@
 import LzString from "lz-string";
 import { writable, type Writable } from "svelte/store";
 import asc from "assemblyscript/dist/asc.js";
-import init, { compile_wasm4 as compileRol } from "rolandc_wasm";
+import initRoland, { compile_wasm4 as compileRol } from "rolandc_wasm";
 
 import roMain from "./templates/hello.rol?raw"
 import asMain from "../../wasm4/cli/assets/templates/assemblyscript/src/main?raw";
@@ -57,9 +57,7 @@ export const compileGame = async (): Promise<void> => {
             newGame = asm;
         }
     } else {
-        // TODO: preload roland init
-        await init();
-
+        await initRoland();
         try {
             newGame = {
                 wasm: compileRol(src.text),
