@@ -6,11 +6,11 @@
   <link rel="icon" type="image/svg+xml" href="/wasm4-playground/favicon.ico" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>WASM-4 Playground</title>
-  <script type="module" crossorigin src="/wasm4-playground/assets/index-e678fd88.js"></script>
-  <link rel="stylesheet" href="/wasm4-playground/assets/index-25597c1e.css">
+  <script type="module" crossorigin src="/wasm4-playground/assets/index-4b4c1f32.js"></script>
+  <link rel="stylesheet" href="/wasm4-playground/assets/index-b52bbad0.css">
 </head>
 
-<body class="text-fg bg-bg dark:text-fg-dark dark:bg-bg-dark min-h-screen px-2 py-4 lg:w-3/4 mx-auto space-y-3">
+<body class="min-h-screen px-2 py-4 lg:w-3/4 mx-auto space-y-3">
   
   <div class="lg:w-2/3 mx-auto text-center">
     <div class="flex mx-auto space-x-3 justify-center items-center">
@@ -20,10 +20,65 @@
     </div>
     <p>Create and share <a href="https://wasm4.org">WASM-4</a> retro games in your web browser.</p>
   </div>
+
+  <hr class="my-9" />
+
   <div id="app"></div>
-  <p class="text-center text-sm italic"><a href="https://github.com/aduros/wasm4/blob/main/LICENSE.txt">WASM-4 logo and
-      runtime &copy; Bruno Garcia</a> | <a href="https://github.com/grantshandy/wasm4-playground/blob/main/LICENSE">site
-      and editor &copy; Grant Handy</a></p>
+
+  <hr class="my-9" />
+
+
+  <div class="lg:w-2/3 mx-auto text-center space-y-4">
+    <h1 class="font-bold text-4xl">FAQ</h1>
+
+    <div class="space-y-2">
+      <h2 class="font-semibold text-2xl">What is WASM-4?</h2>
+      <p>
+        <a href="https://wasm4.org">WASM-4</a> is a retro game "console"
+        that runs its games as
+        <a href="https://webassembly.org/">webassembly</a> files which allows
+        games to be written in almost any programming language.
+      </p>
+    </div>
+
+    <div class="space-y-2">
+      <h2 class="font-semibold text-2xl">What programming language is this?</h2>
+
+      <div class="grid grid-cols-2 gap-2">
+        <div class="p-2 rounded-box bg-base-200 border">
+          <h3 class="text-xl font-semibold"><a href="https://assemblyscript.org">AssemblyScript</a></h3>
+          <p>A compiled variant of <a href="https://typescriptlang.org">Typescript</a> that targets WebAssembly.</p>
+        </div>
+
+        <div class="p-2 rounded-box bg-base-200 border">
+          <h3 class="text-xl font-semibold"><a href="https://github.com/DenialAdams/roland">Roland</a></h3>
+          <p>Roland is a work-in-progress programming language similar to Rust.</p>
+        </div>
+      </div>
+    </div>
+
+    <div class="space-y-2">
+      <h2 class="font-semibold text-2xl">What functions do I have access to?</h2>
+      <p>Programs are compiled with the standard library and link against WASM-4's header file, which you can view by
+        clicking the
+        <img src="./logo.svg" style="height: 1.5rem; display: inline;" />
+        icon.
+      </p>
+    </div>
+
+    <p>
+      <a href="https://buymeacoffee.com/granthandy">Donate</a> &#8729;
+      <a href="https://github.com/grantshandy/wasm4-playground">Source</a>
+    </p>
+    <p class="text-sm italic">
+      <a href="https://github.com/aduros/wasm4/blob/main/LICENSE.txt">
+        WASM-4 Logo and Runtime &copy; Bruno Garcia
+      </a> &#8729;
+      <a href="https://github.com/grantshandy/wasm4-playground/blob/main/LICENSE">
+        Site and Editor &copy; Grant Handy
+      </a>
+    </p>
+  </div>
 </body>
 
 </html>
