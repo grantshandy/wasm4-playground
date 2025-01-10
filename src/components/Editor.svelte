@@ -1,7 +1,7 @@
 <script lang="ts">
     import CodeMirror from "svelte-codemirror-editor";
 
-    import asHeader from "../../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
+    import asHeader from "../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
     import roHeader from "../templates/wasm4.rol?raw";
 
     import { javascript } from "@codemirror/lang-javascript";

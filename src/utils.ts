@@ -4,8 +4,8 @@ import asc from "assemblyscript/dist/asc.js";
 import initRoland, { compile_wasm4 as compileRol } from "rolandc_wasm";
 
 import roMain from "./templates/hello.rol?raw"
-import asMain from "../../wasm4/cli/assets/templates/assemblyscript/src/main?raw";
-import asHeader from "../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
+import asMain from "../wasm4/cli/assets/templates/assemblyscript/src/main?raw";
+import asHeader from "../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
 
 export let error: Writable<string | null> = writable(null);
 
