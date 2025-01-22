@@ -1,6 +1,10 @@
 <script lang="ts">
     import CodeMirror from "svelte-codemirror-editor";
 
+    import asmIcon from "../assets/asm.svg";
+    import wasmIcon from "../assets/wasm.svg";
+    import logoIcon from "../assets/logo.svg";
+
     import asHeader from "../../../wasm4/cli/assets/templates/assemblyscript/src/wasm4?raw";
     import roHeader from "../templates/wasm4.rol?raw";
 
@@ -80,7 +84,7 @@
             >
                 {#if $source.lang == Language.AssemblyScript}
                     <img
-                        src="./asm.svg"
+                        src={asmIcon}
                         style="width: 1.35rem; height: 1.35rem;"
                         alt="Assemblyscript"
                     />
@@ -95,7 +99,7 @@
                 class:selected={view == View.Header}
                 disabled={view == View.Header}
                 ><img
-                    src="./logo.svg"
+                    src={logoIcon}
                     style="width: 1.35rem; height: 1.35rem;"
                     alt="Header File"
                 /></button
@@ -108,7 +112,7 @@
                     class:selected={view == View.Wat}
                     disabled={view == View.Wat}
                     ><img
-                        src="./wasm.svg"
+                        src={wasmIcon}
                         style="width: 1.35rem; height: 1.35rem;"
                         alt="Wast"
                     /></button

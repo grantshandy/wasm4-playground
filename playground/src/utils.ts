@@ -86,12 +86,13 @@ const compileAsm = async (srcText: string): Promise<CompiledGame | string> => as
             noExportMemory: true,
             zeroFilledMemory: true,
             memoryBase: 6560,
-            use: ["seed=wasm4/seedHandler", "trace=", "abort="],
+            use: ["seed=wasm4/seedHandler", "abort=wasm4/abortHandler", "trace="],
             optimizeLevel: 3,
             shrinkLevel: 2,
             converge: true,
             noAssert: true,
             debug: false,
+            
         },
     )
     .then((result: any) => {

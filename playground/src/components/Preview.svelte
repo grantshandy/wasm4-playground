@@ -11,6 +11,7 @@
     } from "../utils";
     import Wasm4Game from "./Wasm4Game.svelte";
     import LzString from "lz-string";
+    import Download from "./Download.svelte";
 
     const tryDemo = () => {
         if ($source.lang == Language.AssemblyScript) {
@@ -51,7 +52,7 @@
             class="float-left btn btn-sm">Reset</button
         >
         <button
-            class="float-right btn btn-sm"
+            class="float-left btn btn-sm"
             on:click={() =>
                 navigator.clipboard.writeText(
                     `${
@@ -59,14 +60,8 @@
                     }#${$source.lang}=${LzString.compressToEncodedURIComponent($source.text)}`,
                 )}>Share</button
         >
-        {#if $game?.wasm && $game?.wasm.length > 0}
-            <a
-                class="float-right btn btn-sm"
-                href={window.URL.createObjectURL(
-                    new Blob([$game.wasm], { type: "application/wasm" }),
-                )}
-                download="playground">Download</a
-            >
-        {/if}
+        <div class="float-right">
+            <Download />
+        </div>
     </div>
 </div>
