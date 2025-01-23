@@ -23,5 +23,15 @@ export default defineConfig({
   },
   define: {
     WASM4_GAMEDEV_MODE: "true",
-  }
+  },
+  worker: {
+    format: "es",
+  },
+  build: {
+    rollupOptions: {
+      output: {
+        format: "esm",
+      },
+    },
+  },
 });

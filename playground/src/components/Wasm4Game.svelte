@@ -14,7 +14,7 @@
   import { Runtime } from "../../../wasm4/runtimes/web/src/runtime";
 
   export let wasm: Uint8Array;
-  let showGamepad: boolean = mobile();
+  let gamepadVisible: boolean = mobile();
 
   let runtime: Runtime = new Runtime("wasm4-demo");
   let mounted: boolean = false;
@@ -243,11 +243,11 @@
   class="w-full rounded-md relative"
 >
   <button
-    class="italic text-xs underline absolute bottom-2 right-2"
-    on:click={() => (showGamepad = !showGamepad)}>toggle gamepad</button
+    class="italic text-xs underline absolute top-0 right-1"
+    on:click={() => (gamepadVisible = !gamepadVisible)}>{gamepadVisible ? "hide" : "show"} gamepad</button
   >
   <div class="w-full" id="gameroot" />
-  {#if showGamepad}
+  {#if gamepadVisible}
     <div
       class="w-full flow-root h-48 p-4 select-none rounded-br-md rounded-bl-md bg-base-200"
     >

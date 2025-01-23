@@ -1,6 +1,6 @@
 /// adapted from wasm4/cli/lib/bundle.js
 
-import { type CompiledGame } from "./utils";
+import { type GameArtifact } from "./utils";
 import { Buffer } from "buffer";
 
 import linuxUrl from "./assets/native/wasm4-toywasm-linux.exe?url";
@@ -38,7 +38,7 @@ const getNativeExe = async (os: OS): Promise<Uint8Array> => {
     };
 };
 
-export const downloadBundle = async (os: OS, cart: CompiledGame): Promise<void> => {
+export const downloadBundle = async (os: OS, cart: GameArtifact): Promise<void> => {
     const nativeExe = await getNativeExe(os);
 
     // FileFooter metadata for the native runtime to read

@@ -13,9 +13,11 @@
     import {
         Language,
         source,
-        game,
+        gameResult,
         compileGame,
         getSourceOrDefault,
+        isSuccess,
+        isLoading,
     } from "../utils";
 
     enum View {
@@ -38,6 +40,9 @@
         <h2 class="float-left text-lg font-semibold">Text Editor</h2>
 
         <div class="float-right flex space-x-1">
+            {#if isLoading($gameResult)}
+                <span class="loading loading-spinner loading-sm"></span>
+            {/if}
             <a
                 class="btn btn-sm"
                 href={window.URL.createObjectURL(
@@ -45,9 +50,9 @@
                 )}
                 download={`wasm4-playground.${$source.lang}`}>Save</a
             >
-            <button class="btn btn-sm btn-primary" on:click={compileGame}
-                >Compile</button
-            >
+            <button class="btn btn-sm btn-primary" on:click={compileGame}>
+                Compile
+            </button>
         </div>
     </div>
 
@@ -56,7 +61,7 @@
             <CodeMirror
                 readonly={true}
                 value={view == View.Wat
-                    ? $game.wat
+                    ? isSuccess($gameResult) && $gameResult.wat
                     : $source.lang == Language.AssemblyScript
                       ? asHeader
                       : roHeader}
@@ -105,7 +110,7 @@
                 /></button
             >
 
-            {#if $game?.wat != null}
+            {#if isSuccess($gameResult) && $gameResult?.wat != null}
                 <button
                     on:click={() => (view = View.Wat)}
                     class="btn btn-sm rounded-t-none border-x border-b border-t-none border-base-300"

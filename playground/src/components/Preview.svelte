@@ -5,23 +5,28 @@
     import {
         Language,
         source,
-        game,
+        gameResult,
         compileGame,
         getSourceOrDefault,
+        isSuccess,
     } from "../utils";
     import Wasm4Game from "./Wasm4Game.svelte";
     import LzString from "lz-string";
     import Download from "./Download.svelte";
 
     const tryDemo = () => {
-        if ($source.lang == Language.AssemblyScript) {
-            $source.text = asSnake;
-        } else {
-            $source.text = roRunner;
-        }
+        $source.text =
+            $source.lang == Language.AssemblyScript ? asSnake : roRunner;
 
         compileGame();
     };
+
+    const copyShareLink = () =>
+        navigator.clipboard.writeText(
+            `${
+                window.location.href.split("#")[0]
+            }#${$source.lang}=${LzString.compressToEncodedURIComponent($source.text)}`,
+        );
 </script>
 
 <div class="grow flex flex-col">
@@ -37,8 +42,8 @@
     </div>
 
     <div class="grow rounded-box border">
-        {#if $game}
-            <Wasm4Game wasm={$game.wasm} />
+        {#if isSuccess($gameResult)}
+            <Wasm4Game wasm={$gameResult.wasm} />
         {/if}
     </div>
 
@@ -51,14 +56,8 @@
             }}
             class="float-left btn btn-sm">Reset</button
         >
-        <button
-            class="float-left btn btn-sm"
-            on:click={() =>
-                navigator.clipboard.writeText(
-                    `${
-                        window.location.href.split("#")[0]
-                    }#${$source.lang}=${LzString.compressToEncodedURIComponent($source.text)}`,
-                )}>Share</button
+        <button class="float-left btn btn-sm" on:click={copyShareLink}
+            >Share</button
         >
         <div class="float-right">
             <Download />
